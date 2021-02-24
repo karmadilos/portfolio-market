@@ -42,11 +42,12 @@ function RegisterForm({ history }) {
                 console.log(res);
                 if (res.register_success) {
                     history.push('/login');
-                    return { register_success: true }
+                    return { payload: true }
                 }
                 else {
                     dispatch(formError("이미 등록된 Email입니다."))
-                    return { register_success: false }
+                    dispatch(initializeForm('register'))
+                    return { payload: false }
                 }
             })
     };

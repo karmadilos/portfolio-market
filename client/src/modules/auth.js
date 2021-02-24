@@ -8,6 +8,7 @@ const INITIALIZE_FORM = 'auth/INITIALIZE_FORM';
 const REGISTER = 'auth/REGISTER';
 const LOGIN = 'auth/LOGIN';
 const AUTH_USER = 'auth/AUTH_USER';
+const LOGOUT = 'auth/LOGOUT';
 const FORM_ERROR = 'auth/FORM_ERROR';
 
 
@@ -46,7 +47,7 @@ export const login = createAction(
             })
             .catch(err => {
                 console.log(err);
-                return { register_success: false }
+                return err.response.data
             })
 );
 
@@ -54,9 +55,15 @@ export const authUser = createAction(AUTH_USER,
     () => authAPI.check().then(res => res.data)
 )
 
+export const logout = createAction(LOGOUT,
+    () => authAPI.logout()
+        .then(res => res.data)
+        .catch(err => err.response.data)
+)
 export const formError = createAction(FORM_ERROR,
     err => err
 )
+
 const initialState = {
     register: {
         email: '',
@@ -68,10 +75,9 @@ const initialState = {
         email: '',
         password: ''
     },
-    auth: null,
     authError: null,
-    login_success: false,
-    register_success: false
+    user: null,
+    login_success: "fail"
 };
 
 const auth = handleActions({
@@ -83,15 +89,15 @@ const auth = handleActions({
         ...state,
         [type]: initialState[type]
     }),
-    [REGISTER]: (state, { payload: register_success }) => {
+    [REGISTER]: (state, action) => {
         return {
             ...state,
-            register_success: register_success
+            register_success: action.payload.status
         }
     },
-    [LOGIN]: (state, { payload: login_success }) => ({
+    [LOGIN]: (state, action) => ({
         ...state,
-        login_success: login_success
+        login_success: action.payload.status
     }),
     [FORM_ERROR]: (state, { payload: err }) => ({
         ...state,

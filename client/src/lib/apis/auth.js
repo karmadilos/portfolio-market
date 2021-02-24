@@ -7,3 +7,5 @@ export const register = ({ email, password, fullname }) =>
     request('POST', '/auth/register', { email, password, fullname })
 
 export const check = () => request('POST', '/auth/check')
+
+export const logout = () => request('GET', '/auth/logout')
