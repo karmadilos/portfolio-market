@@ -1,4 +1,5 @@
 from flask import jsonify, request, Blueprint, session
+from flask_restful import abort
 from datetime import timedelta
 from database.models.user import User
 from database.db import db
@@ -16,11 +17,8 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/signup", methods=["POST"])
 def sign_up():
-    email, password, fullname = (
-        request.form["email"],
-        request.form["password"],
-        request.form["fullname"],
-    )
+    email, password, fullname = dict(request.get_json(force=True)).values()
+    # print(email, password, fullname)
     if email == "" or password == "" or fullname == "":
         abort(400, message="email, password, or fullname is null.")
     elif User.query.filter_by(email=email).first():
@@ -35,10 +33,7 @@ def sign_up():
 
 @auth.route("/login", methods=["POST"])
 def login():
-    email, password = (
-        request.form["email"],
-        request.form["password"],
-    )
+    email, password = dict(request.get_json(force=True)).values()
     user = User.query.filter_by(email=email).first()
     if not user or not user.check_password(password):
         return (
