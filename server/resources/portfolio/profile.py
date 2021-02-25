@@ -31,9 +31,9 @@ class ProfileApi(Resource):
         keys = [
             "id",
             "user_id",
-            "school_name",
-            "major",
-            "status",
+            "user_name",
+            "comment",
+            "img_url",
             "create_date",
             "updated_date",
         ]

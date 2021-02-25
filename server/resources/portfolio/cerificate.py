@@ -25,9 +25,9 @@ class CertificateApi(Resource):
         keys = [
             "id",
             "user_id",
-            "school_name",
-            "major",
-            "status",
+            "title",
+            "organization",
+            "acquisition_date",
             "create_date",
             "updated_date",
         ]
@@ -40,10 +40,10 @@ class CertificateApi(Resource):
     def post(self, user_id):
         if not user_id:
             abort(401, status="fail", msg="접근 권한이 없습니다.")
-        title, organization, aquisition_date = dict(
+        title, organization, acquisition_date = dict(
             request.get_json(force=True)
         ).values()
-        certificate = Certificate(user_id, title, organization, aquisition_date)
+        certificate = Certificate(user_id, title, organization, acquisition_date)
         db.session.add(certificate)
         db.session.commit()
         return jsonify(
