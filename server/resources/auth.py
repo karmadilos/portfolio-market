@@ -1,35 +1,30 @@
 from flask import jsonify, request, Blueprint, session
 from flask_restful import abort
-from datetime import timedelta
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import set_access_cookies
+from flask_jwt_extended import unset_jwt_cookies
 from database.models.user import User
 from database.db import db
-import jwt
-
-"""
-User APIs : 유저 SignUp / Login / Logout
-
-SignUp API : *fullname*, *email*, *password* 을 입력받아 새로운 유저를 가입시킵니다.
-Login API : *email*, *password* 를 입력받아 특정 유저로 로그인합니다.
-Logout API : 현재 로그인 된 유저를 로그아웃합니다.
-"""
 
 auth = Blueprint("auth", __name__)
 
 
 @auth.route("/register", methods=["POST"])
-def sign_up():
+def register():
     email, password, fullname = dict(request.get_json(force=True)).values()
     # print(email, password, fullname)
     if email == "" or password == "" or fullname == "":
-        abort(400, message="email, password, or fullname is null.")
+        abort(400, msg="이메일, 패스워드, 이름은 NULL일 수 없습니다.")
     elif User.query.filter_by(email=email).first():
-        abort(400, message=f"{email} has already been registered.")
+        return jsonify(status="fail", msg=f"{email}는 이미 등록된 계정입니다."), 400
 
     user = User(email, password, fullname)
     db.session.add(user)
     db.session.commit()
 
-    return jsonify(status="success", message=f"Successfully Registered: {email}")
+    return jsonify(status="success")
 
 
 @auth.route("/login", methods=["POST"])
@@ -38,51 +33,66 @@ def login():
     user = User.query.filter_by(email=email).first()
     if not user or not user.check_password(password):
         return (
-            jsonify(status="fail", message="Invalid email or password."),
+            jsonify(status="fail", msg="아이디 또는 비밀번호를 확인하세요."),
             400,
         )
+    # 세션 방식
+    # user_id = session.get("user_id")
+    # # 기존에 로그인한 계정이 있다면
+    # if user_id:
+    #     return (
+    #         jsonify(
+    #             status="fail",
+    #             message="Invalid access: already logined",
+    #         ),
+    #         401,
+    #     )
+    # session["user_id"] = email
+    # return jsonify(status="success", session=session.get("user_id"))
+    response = jsonify(
+        status="success", user={"id": user.id, "fullname": user.fullname}
+    )
+    access_token = create_access_token(identity=user.id)
+    set_access_cookies(response, access_token)
+    return response
 
-    # session.clear()
-    user_id = session.get("user_id")
-    # 기존에 로그인한 계정이 있다면
-    if user_id:
-        return (
-            jsonify(
-                status="fail",
-                message="Invalid access: already logined",
-            ),
-            401,
-        )
-    session["user_id"] = email
 
-    return jsonify(status="success", session=session.get("user_id"))
-
-
-@auth.route("/logout")
+@auth.route("/logout", methods=["POST"])
 def logout():
-    user_id = session.get("user_id")
-    print(user_id)
-    # 기존에 로그인한 계정이 없다면
-    if not user_id:
-        return (
-            jsonify(
-                status="fail",
-                message="Invalid access: there is no account to log out.",
-            ),
-            401,
-        )
-    session.pop("user_id", None)
-    return jsonify(status="success")
+    response = jsonify(status="success")
+    # accessToken Cookie를 삭제한다.
+    unset_jwt_cookies(response)
+    return response
 
 
-@auth.route("/check")
-def auth_check():
-    _id = request.cookies.get("session")
-    if "user_id" not in session:
-        return jsonify(status="failure", Auth=False)
-    return jsonify(status="success", Auth=True)
+@auth.route("/user", methods=["POST"])
+@jwt_required()
+def get_user():
+    identity = get_jwt_identity()
+    if not identity:
+        abort(401, status="fail", msg="로그인이 필요합니다.")
+    user = db.session.query(User).filter_by(id=identity).first()
+    return jsonify(status="success", user={"id": identity, "fullname": user.fullname})
 
 
+# 세션 방식
+# @auth.route("/logout")
+# def logout():
+#     user_id = session.get("user_id")
+#     print(user_id)
+#     # 기존에 로그인한 계정이 없다면
+#     if not user_id:
+#         return (
+#             jsonify(
+#                 status="fail",
+#                 message="Invalid access: there is no account to log out.",
+#             ),
+#             401,
+#         )
+#     session.pop("user_id", None)
+#     return jsonify(status="success")
+
+# 세션 방식
 # @auth.before_request
 # def set_session_permanent():
 #     session.permanent = True
