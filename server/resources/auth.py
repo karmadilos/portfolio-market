@@ -1,7 +1,9 @@
 from flask import jsonify, request, Blueprint, session
+from flask_restful import abort
 from datetime import timedelta
 from database.models.user import User
 from database.db import db
+import jwt
 
 """
 User APIs : 유저 SignUp / Login / Logout
@@ -14,13 +16,10 @@ Logout API : 현재 로그인 된 유저를 로그아웃합니다.
 auth = Blueprint("auth", __name__)
 
 
-@auth.route("/signup", methods=["POST"])
+@auth.route("/register", methods=["POST"])
 def sign_up():
-    email, password, fullname = (
-        request.form["email"],
-        request.form["password"],
-        request.form["fullname"],
-    )
+    email, password, fullname = dict(request.get_json(force=True)).values()
+    # print(email, password, fullname)
     if email == "" or password == "" or fullname == "":
         abort(400, message="email, password, or fullname is null.")
     elif User.query.filter_by(email=email).first():
@@ -35,16 +34,11 @@ def sign_up():
 
 @auth.route("/login", methods=["POST"])
 def login():
-    email, password = (
-        request.form["email"],
-        request.form["password"],
-    )
+    email, password = dict(request.get_json(force=True)).values()
     user = User.query.filter_by(email=email).first()
     if not user or not user.check_password(password):
         return (
-            jsonify(
-                status="fail", login_success=False, message="Invalid email or password."
-            ),
+            jsonify(status="fail", message="Invalid email or password."),
             400,
         )
 
@@ -55,34 +49,41 @@ def login():
         return (
             jsonify(
                 status="fail",
-                login_success=False,
                 message="Invalid access: already logined",
             ),
             401,
         )
     session["user_id"] = email
 
-    return jsonify(status="success", login_success=True)
+    return jsonify(status="success", session=session.get("user_id"))
 
 
 @auth.route("/logout")
 def logout():
     user_id = session.get("user_id")
+    print(user_id)
     # 기존에 로그인한 계정이 없다면
     if not user_id:
         return (
             jsonify(
                 status="fail",
-                logout_success=False,
                 message="Invalid access: there is no account to log out.",
             ),
             401,
         )
     session.pop("user_id", None)
-    return jsonify(status="success", logout_success=True)
+    return jsonify(status="success")
 
 
-@auth.before_request
-def set_session_permanent():
-    session.permanent = True
-    auth.permanent_session_lifetime = timedelta(minutes=30)
+@auth.route("/check")
+def auth_check():
+    _id = request.cookies.get("session")
+    if "user_id" not in session:
+        return jsonify(status="failure", Auth=False)
+    return jsonify(status="success", Auth=True)
+
+
+# @auth.before_request
+# def set_session_permanent():
+#     session.permanent = True
+#     auth.permanent_session_lifetime = timedelta(minutes=5)
