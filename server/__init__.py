@@ -22,7 +22,7 @@ from resources.auth.auth import auth
 from resources.portfolio.education import EducationApi
 from resources.portfolio.awards import AwardsApi
 from resources.portfolio.project import ProjectApi
-from resources.portfolio.cerificate import CertificateApi
+from resources.portfolio.certificate import CertificateApi
 from resources.portfolio.profile import ProfileApi
 
 

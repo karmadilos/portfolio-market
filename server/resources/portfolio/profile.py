@@ -2,7 +2,8 @@ from flask import jsonify, request
 from flask_restful import reqparse, abort, Api, Resource
 from database.models.profile import Profile
 from database.db import db
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
 from config import IMAGE_URL_PATH
 import datetime
 

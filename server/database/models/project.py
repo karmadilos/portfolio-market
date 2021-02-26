@@ -9,7 +9,7 @@ class Project(db.Model):
     title = db.Column(db.String(50), nullable=False)
     desc = db.Column(db.String(100))
     start_date = db.Column(db.DateTime, nullable=False)
-    end_date = db.Column(db.DateTime, nullalbe=False)
+    end_date = db.Column(db.DateTime, nullable=False)
     create_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
