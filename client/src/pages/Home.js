@@ -1,10 +1,11 @@
 import React from 'react';
 import HomeContainer from '../containers/auth/HomeContainer';
+import { getCookie } from '../lib/apis/client';
 
 function Home() {
-    console.log(window.sessionStorage['session'])
+    console.log(getCookie('csrf_access_token'))
     return (
-        <HomeContainer auth={window.sessionStorage['session']} />
+        <HomeContainer auth={getCookie('csrf_access_token')} />
     );
 }
 
