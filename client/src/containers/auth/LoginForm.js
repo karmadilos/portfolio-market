@@ -7,8 +7,10 @@ import { withRouter } from 'react-router-dom';
 
 function LoginForm({ history }) {
     const dispatch = useDispatch();
-    const { form, authError } = useSelector(({ auth }) => ({
+    const { form, auth, user, authError } = useSelector(({ auth }) => ({
         form: auth.login,
+        auth: auth.auth,
+        user: auth.user,
         authError: auth.authError
     }));
 
@@ -30,19 +32,7 @@ function LoginForm({ history }) {
             dispatch(formError("아이디 OR 패스워드를 입력하세요."))
             return;
         }
-        dispatch(login({ email, password })).payload
-            .then(res => {
-                if (res.status === "success") {
-                    window.sessionStorage.setItem('session', res.session)
-                    history.push('/');
-                    return { payload: { status: false } }
-                }
-                else {
-                    dispatch(formError("아이디 또는 비밀번호가 틀렸습니다."))
-                    dispatch(initializeForm('login'))
-                    return { payload: { status: false } }
-                }
-            })
+        dispatch(login({ email, password }))
     };
 
     useEffect(() => {
@@ -50,6 +40,16 @@ function LoginForm({ history }) {
         dispatch(formError(''));
     }, [dispatch]);
 
+    useEffect(() => {
+        if (user) {
+            history.push('/');
+            // try {
+            //     localStorage.setItem('user', JSON.stringify(user));
+            // } catch (e) {
+            //     console.log("localStorage Error");
+            // }
+        }
+    }, [history, auth, user]);
     return (
         <AuthFormBlock
             type="login"

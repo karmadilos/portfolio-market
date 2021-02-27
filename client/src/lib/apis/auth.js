@@ -1,4 +1,4 @@
-import { request } from './client';
+import { request, requestWithJWT } from './client';
 
 export const login = ({ email, password }) =>
     request('POST', '/auth/login', { email, password })
@@ -6,6 +6,6 @@ export const login = ({ email, password }) =>
 export const register = ({ email, password, fullname }) =>
     request('POST', '/auth/register', { email, password, fullname })
 
-export const check = () => request('POST', '/auth/check')
+export const getUser = () => requestWithJWT('POST', '/auth/user');
 
-export const logout = () => request('GET', '/auth/logout')
+export const logout = () => requestWithJWT('POST', '/auth/logout');
