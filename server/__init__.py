@@ -18,7 +18,22 @@ from database.db import db
 migrate = Migrate()
 
 # auth blueprint 객체
-from resources.auth import auth
+from resources.auth.auth import auth
+from resources.portfolio.education import EducationApi
+from resources.portfolio.awards import AwardsApi
+from resources.portfolio.project import ProjectApi
+from resources.portfolio.certificate import CertificateApi
+from resources.portfolio.profile import ProfileApi
+
+
+def set_api_resources(api):
+    api.add_resource(EducationApi, "/education/<user_id>", "/education/<user_id>/<id>")
+    api.add_resource(AwardsApi, "/awards/<user_id>", "/awards/<user_id>/<id>")
+    api.add_resource(ProjectApi, "/project/<user_id>", "/project/<user_id>/<id>")
+    api.add_resource(
+        CertificateApi, "/certificate/<user_id>", "/certificate/<user_id>/<id>"
+    )
+    api.add_resource(ProfileApi, "/profile", "/profile/<user_id>")
 
 
 def create_app():
@@ -33,6 +48,7 @@ def create_app():
     app.register_blueprint(auth, url_prefix="/auth")
     # api 설정 및 적용
     api = Api(app)
+    set_api_resources(api)
     # db 적용 및 migrate
     db.init_app(app)
     db.create_all(app=app)

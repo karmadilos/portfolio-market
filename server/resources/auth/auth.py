@@ -1,3 +1,4 @@
+import os
 from flask import jsonify, request, Blueprint, session
 from flask_restful import abort
 from flask_jwt_extended import create_access_token
@@ -6,6 +7,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import set_access_cookies
 from flask_jwt_extended import unset_jwt_cookies
 from database.models.user import User
+from database.models.profile import Profile
 from database.db import db
 
 auth = Blueprint("auth", __name__)
@@ -24,7 +26,10 @@ def register():
     db.session.add(user)
     db.session.commit()
 
-    return jsonify(status="success")
+    profile = Profile(user.id, user.fullname)
+    db.session.add(profile)
+    db.session.commit()
+    return jsonify(status="success", message=f"Successfully Registered: {email}")
 
 
 @auth.route("/login", methods=["POST"])

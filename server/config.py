@@ -17,3 +17,4 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 JWT_TOKEN_LOCATION = ["cookies"]
 JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+IMAGE_URL_PATH = os.getenv("IMAGE_URL_PATH")

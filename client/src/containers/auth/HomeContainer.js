@@ -18,7 +18,7 @@ function HomeContainer({ auth }) {
         <div>
             <div>
                 <Nav url="/" name="HOME" onClick={onClick} />
-                <Nav url="/" name="Network" onClick={onClick} />
+                <Nav url="/network" name="Network" onClick={onClick} />
                 {!auth ? (
                     <Nav url="/login" name="Login" onClick={onClick} />
                 ) : (
