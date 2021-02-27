@@ -21,7 +21,7 @@ class ProfileApi(Resource):
             profiles = db.session.query(Profile).filter(Profile.user_name.like(q)).all()
         # 검색 쿼리스트링이 없고, user_id 값이 주어지면 해당하는 profile return, 200
         elif user_id:
-            profiles = db.session.query(Profile).filter_by(user_id=user_id).first()
+            profiles = db.session.query(Profile).filter_by(user_id=user_id)
         # 검색 쿼리스트링이 없고, user_id 값이 주어지지 않으면 모든 profile return, 200
         else:
             profiles = db.session.query(Profile).all()

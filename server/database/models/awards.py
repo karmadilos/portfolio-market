@@ -11,7 +11,7 @@ class Awards(db.Model):
     create_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, user_id, award_title, award_desc=None):
+    def __init__(self, user_id, award_title="", award_desc=""):
         self.user_id = user_id
         self.award_title = award_title
         self.award_desc = award_desc

@@ -13,7 +13,14 @@ class Project(db.Model):
     create_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, user_id, title, start_date, end_date, desc=None):
+    def __init__(
+        self,
+        user_id,
+        title="",
+        start_date=datetime.datetime.utcnow,
+        end_date=datetime.datetime.utcnow,
+        desc="",
+    ):
         self.user_id = user_id
         self.title = title
         self.desc = desc
