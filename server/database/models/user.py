@@ -9,7 +9,6 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     fullname = db.Column(db.String(30), nullable=False)
     register_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    profile = db.relationship("Profile", uselist=False, back_populates="parent")
 
     def __init__(self, email, password, fullname):
         self.email = email

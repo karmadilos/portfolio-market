@@ -33,7 +33,7 @@ def set_api_resources(api):
     api.add_resource(
         CertificateApi, "/certificate/<user_id>", "/certificate/<user_id>/<id>"
     )
-    api.add_resource(ProfileApi, "/profile/<user_id>")
+    api.add_resource(ProfileApi, "/profile", "/profile/<user_id>")
 
 
 def create_app():

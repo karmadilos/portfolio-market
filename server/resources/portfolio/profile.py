@@ -14,10 +14,11 @@ parser.add_argument("search")
 # 토큰 검증방식을 거친 후 접근할 수 있도록 처리하는 것 필요
 class ProfileApi(Resource):
     def get(self, user_id=None):
-        s = parser.parse_args().search
+        search = parser.parse_args().search
+        q = f"%{search}%"
         # 검색 쿼리스트링이 주어지는 경우에는 해당하는 데이터 모두 return, 200
-        if s:
-            profiles = db.session.query(Profile).filter(Profile.user_name.like("%s"))
+        if search:
+            profiles = db.session.query(Profile).filter(Profile.user_name.like(q)).all()
         # 검색 쿼리스트링이 없고, user_id 값이 주어지면 해당하는 profile return, 200
         elif user_id:
             profiles = db.session.query(Profile).filter_by(user_id=user_id).first()
@@ -27,7 +28,7 @@ class ProfileApi(Resource):
 
         # 데이터가 없는 초기의 경우에는 빈 배열만 return, 200
         if not profiles:
-            jsonify(status="success", data=[])
+            return jsonify(status="success", data=[])
 
         keys = [
             "id",

@@ -1,3 +1,4 @@
+import os
 from flask import jsonify, request, Blueprint, session
 from flask_restful import abort
 from flask_jwt_extended import create_access_token
