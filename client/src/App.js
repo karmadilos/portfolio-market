@@ -10,11 +10,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   return (
     <>
-      <Route component={Home} path={['/@:userID', '/']} exact />
+      <Route component={Home} path='/' exact />
       <Route component={Login} path='/login' />
       <Route component={Register} path='/register' />
       <Route component={Network} path='/network' />
-      <Route component={Portfolio} path='/portfolio' />
+      <Route component={Portfolio} path={['/portfolio', '/portfolio:@user_id']} />
     </>
   );
 }

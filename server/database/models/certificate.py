@@ -12,7 +12,13 @@ class Certificate(db.Model):
     create_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, user_id, title, organization, acquisition_date):
+    def __init__(
+        self,
+        user_id,
+        title="",
+        organization="",
+        acquisition_date=datetime.datetime.utcnow,
+    ):
         self.user_id = user_id
         self.title = title
         self.organization = organization
