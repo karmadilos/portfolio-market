@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 
 function RegisterForm({ history }) {
     const dispatch = useDispatch();
-    const { form, authError } = useSelector(({ auth }) => ({
+    const { form, authError, auth } = useSelector(({ auth }) => ({
         form: auth.register,
         auth: auth.auth,
         authError: auth.authError
@@ -37,19 +37,7 @@ function RegisterForm({ history }) {
             dispatch(formError("비밀번호와 비밀번호 확인이 다릅니다."))
             return;
         }
-        dispatch(register({ email, password, fullname })).payload
-            .then(res => {
-                console.log(res);
-                if (res.register_success) {
-                    history.push('/login');
-                    return { payload: true }
-                }
-                else {
-                    dispatch(formError("이미 등록된 Email입니다."))
-                    dispatch(initializeForm('register'))
-                    return { payload: false }
-                }
-            })
+        dispatch(register({ email, password, fullname }))
     };
 
     useEffect(() => {
@@ -57,6 +45,10 @@ function RegisterForm({ history }) {
         dispatch(formError(''));
     }, [dispatch]);
 
+    useEffect(() => {
+        if (auth.data)
+            history.push('/login')
+    }, [authError])
     return (
         <AuthFormBlock
             type="register"

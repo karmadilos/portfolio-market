@@ -3,31 +3,22 @@ import PropTypes from 'prop-types';
 import Nav from '../../components/Nav';
 import { logout } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function HomeContainer({ auth }) {
     const dispatch = useDispatch();
+    const { user } = useSelector(({ auth }) => ({
+        user: auth.user
+    }));
     const onClick = (e) => {
         e.preventDefault();
-        dispatch(logout()).payload
-            .then(res => {
-                if (res.status === 'success') {
-                    window.sessionStorage.clear();
-                    window.location.reload();
-                }
-            })
-            .catch(err => {
-                console.log(err.response.data)
-                console.log(window.sessionStorage['session'])
-                window.sessionStorage.removeItem('session');
-                window.location.reload();
-            })
+        dispatch(logout());
     }
     return (
         <div>
             <div>
                 <Nav url="/" name="HOME" onClick={onClick} />
-                <Nav url="/" name="Network" onClick={onClick} />
+                <Nav url="/network" name="Network" onClick={onClick} />
                 {!auth ? (
                     <Nav url="/login" name="Login" onClick={onClick} />
                 ) : (
@@ -35,7 +26,8 @@ function HomeContainer({ auth }) {
                     )
                 }
             </div>
-            <div>레이서 포트폴리오 사이트 입니다.</div>
+            <div>{(user) ? (<b>{user.fullname}님</b>) : ''}레이서 포트폴리오 사이트 입니다.
+        </div>
         </div>
     );
 }

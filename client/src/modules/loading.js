@@ -29,4 +29,4 @@ const loading = handleActions(
     initialState
 );
 
-export default loading; // 액션함수(==리듀서) export
+export default loading; // 리듀서 export
