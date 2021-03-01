@@ -2,10 +2,11 @@
 import axios from 'axios';
 
 const client = axios.create();
-
 //client.defaults.headers.common['Authorization'] = 'Bearer a1b2c3d4';
 client.defaults.withCredentials = true;
+client.defaults.port = 5000;
 export const request = (method, url, data) => {
+    console.log(client.defaults.baseURL+url)
     return axios({
         method,
         url,
@@ -14,7 +15,8 @@ export const request = (method, url, data) => {
 };
 
 export const requestWithJWT = (method, url, data) => {
-    return axios({
+   console.log(url)
+   return axios({
         method,
         url,
         data,

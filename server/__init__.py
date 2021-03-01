@@ -39,7 +39,7 @@ def set_api_resources(api):
 def create_app():
     # Flask 객체 app 생성 및 config 변수 적용
     app = Flask(__name__)
-    CORS(app, supports_credentials=True, origins=os.getenv("ORIGIN"))
+    CORS(app, supports_credentials=True)
     # app object에 config 적용
     app.config.from_object(config)
     # jwt 적용을 위한 JMTManager 적용
