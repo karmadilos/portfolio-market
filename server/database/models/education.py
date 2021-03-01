@@ -12,7 +12,7 @@ class Education(db.Model):
     create_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, user_id, school_name="", major="", status=""):
+    def __init__(self, user_id, school_name="", major="", status="attending"):
         self.user_id = user_id
         self.school_name = school_name
         self.major = major

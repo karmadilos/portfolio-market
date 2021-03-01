@@ -40,13 +40,13 @@ class EducationApi(Resource):
     def post(self, user_id):
         if not user_id:
             abort(401, status="fail", msg="접근 권한이 없습니다.")
-        school_name, major, status = dict(request.get_json(force=True)).values()
-        education = Education(user_id, school_name, major, status)
+        # school_name, major, status = dict(request.get_json(force=True)).values()
+        education = Education(user_id)
         db.session.add(education)
         db.session.commit()
         return jsonify(
             status="success",
-            result={"_id": education.id},
+            result={"id": education.id},
         )
 
     def put(self, user_id, id=None):
@@ -61,7 +61,7 @@ class EducationApi(Resource):
         db.session.commit()
         return jsonify(
             status="success",
-            result={"_id": list(map(lambda x: x["id"], data["data"]))},
+            result={"id": list(map(lambda x: x["id"], data["data"]))},
         )
 
     def delete(self, user_id, id):
@@ -82,6 +82,6 @@ class EducationApi(Resource):
         return jsonify(
             status="success",
             result={
-                "_id": id,
+                "id": id,
             },
         )

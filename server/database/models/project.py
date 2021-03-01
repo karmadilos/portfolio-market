@@ -17,8 +17,8 @@ class Project(db.Model):
         self,
         user_id,
         title="",
-        start_date=datetime.datetime.utcnow,
-        end_date=datetime.datetime.utcnow,
+        start_date=datetime.datetime.utcnow(),
+        end_date=datetime.datetime.utcnow(),
         desc="",
     ):
         self.user_id = user_id

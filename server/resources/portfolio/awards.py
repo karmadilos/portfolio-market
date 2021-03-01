@@ -17,7 +17,7 @@ class AwardsApi(Resource):
                 .all()
             )
         else:
-            awards = db.session.query(Awards).filter_by(user_id=user_id, id=id).first()
+            awards = db.session.query(Awards).filter_by(user_id=user_id, id=id)
 
         # 데이터가 없는 초기의 경우에는 빈 배열만 return
         if not awards:

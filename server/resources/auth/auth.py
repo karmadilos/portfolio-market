@@ -8,6 +8,10 @@ from flask_jwt_extended import set_access_cookies
 from flask_jwt_extended import unset_jwt_cookies
 from database.models.user import User
 from database.models.profile import Profile
+from database.models.education import Education
+from database.models.project import Project
+from database.models.awards import Awards
+from database.models.certificate import Certificate
 from database.db import db
 
 auth = Blueprint("auth", __name__)
@@ -28,6 +32,22 @@ def register():
 
     profile = Profile(user.id, user.fullname)
     db.session.add(profile)
+    db.session.commit()
+
+    education = Education(user.id)
+    db.session.add(education)
+    db.session.commit()
+
+    awards = Awards(user.id)
+    db.session.add(awards)
+    db.session.commit()
+
+    project = Project(user.id)
+    db.session.add(project)
+    db.session.commit()
+
+    certificate = Certificate(user.id)
+    db.session.add(certificate)
     db.session.commit()
     return jsonify(status="success", message=f"Successfully Registered: {email}")
 
