@@ -2,7 +2,12 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import AuthFormBlock from '../../components/auth/AuthFormBlock';
-import { changeInputs, formError, initializeForm, register } from '../../modules/auth';
+import {
+    changeInputs,
+    formError,
+    initializeForm,
+    register,
+} from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
 
 function RegisterForm({ history }) {
@@ -10,7 +15,7 @@ function RegisterForm({ history }) {
     const { form, authError, auth } = useSelector(({ auth }) => ({
         form: auth.register,
         auth: auth.auth,
-        authError: auth.authError
+        authError: auth.authError,
     }));
 
     const onChange = (e) => {
@@ -24,20 +29,20 @@ function RegisterForm({ history }) {
         );
     };
 
-    const onSubmit = e => {
+    const onSubmit = (e) => {
         e.preventDefault();
-        console.log("onsubmit 호출");
+        console.log('onsubmit 호출');
         const { email, password, password_check, fullname } = form;
         console.log(email, password, password_check, fullname);
         if (!email || !password || !password_check || !fullname) {
-            dispatch(formError("모든 값을 채워야합니다."))
-            return
-        }
-        if (password !== password_check) {
-            dispatch(formError("비밀번호와 비밀번호 확인이 다릅니다."))
+            dispatch(formError('모든 값을 채워야합니다.'));
             return;
         }
-        dispatch(register({ email, password, fullname }))
+        if (password !== password_check) {
+            dispatch(formError('비밀번호와 비밀번호 확인이 다릅니다.'));
+            return;
+        }
+        dispatch(register({ email, password, fullname }));
     };
 
     useEffect(() => {
@@ -46,9 +51,8 @@ function RegisterForm({ history }) {
     }, [dispatch]);
 
     useEffect(() => {
-        if (auth.data)
-            history.push('/login')
-    }, [authError])
+        if (auth.data) history.push('/login');
+    }, [authError, auth]);
     return (
         <AuthFormBlock
             type="register"
@@ -61,7 +65,7 @@ function RegisterForm({ history }) {
 }
 
 RegisterForm.propTypes = {
-    history: PropTypes.object
-}
+    history: PropTypes.object,
+};
 
-export default withRouter(RegisterForm)
+export default withRouter(RegisterForm);
