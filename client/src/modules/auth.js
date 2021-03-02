@@ -28,32 +28,52 @@ export const changeInputs = createAction(
     ({ type, key, value }) => ({
         type,
         key,
-        value
-    })
+        value,
+    }),
 );
 
-export const initializeForm = createAction(INITIALIZE_FORM, type => type)
+export const initializeForm = createAction(INITIALIZE_FORM, (type) => type);
 
-export const register = asyncUtils.createPromiseThunk(REGISTER, authAPI.register);
-export const login = asyncUtils.createPromiseThunk(LOGIN, authAPI.login);
-export const logout = () => async dispatch => {
+export const register = asyncUtils.createPromiseThunk(
+    REGISTER,
+    authAPI.register,
+);
+export const login = ({ email, password }) => async (dispatch) => {
+    // 요청 시작
+    dispatch({ type: LOGIN });
+    try {
+        // 결과물의 이름을 payload 라는 이름으로 통일시킵니다.
+        const payload = await authAPI.login({ email, password });
+        console.log(payload);
+        sessionStorage.setItem('id', payload.data.user.id);
+        sessionStorage.setItem('fullname', payload.data.user.fullname);
+        dispatch({ type: LOGIN_SUCCESS, payload }); // 성공
+    } catch (e) {
+        console.log(e);
+        dispatch({
+            type: LOGIN_FAILURE,
+            payload: e.response.data,
+            error: true,
+        }); // 실패
+    }
+};
+export const logout = () => async (dispatch) => {
     dispatch({ type: LOGOUT });
     try {
         const payload = await authAPI.logout(); // API 호출
+        sessionStorage.clear();
         window.location.reload();
         dispatch({ type: LOGOUT_FINISHED, payload }); // 성공
     } catch (e) {
-        console.log(e.response.data)
+        console.log(e.response.data);
     }
-}
+};
 
 export const getUser = createAction(GET_USER, () => authAPI.getUser());
 export const setUser = createAction(GET_USER_SUCCESS);
 export const getUserFail = createAction(GET_USER_FAILURE);
 
-export const formError = createAction(FORM_ERROR,
-    err => err
-)
+export const formError = createAction(FORM_ERROR, (err) => err);
 
 const initialState = {
     register: {
@@ -64,76 +84,79 @@ const initialState = {
     },
     login: {
         email: '',
-        password: ''
+        password: '',
     },
     auth: asyncUtils.reducerUtils.initial(),
     user: null,
-    authError: ''
+    authError: '',
 };
 
-const auth = handleActions({
-    [CHANGE_INPUTS]: (state, { payload: { type, key, value } }) =>
-        produce(state, draft => {
-            draft[type][key] = value;
-        }),
-    [INITIALIZE_FORM]: (state, { payload: type }) => ({
-        ...state,
-        [type]: initialState[type]
-    }),
-    [REGISTER_SUCCESS]: (state, action) => {
-        return {
+const auth = handleActions(
+    {
+        [CHANGE_INPUTS]: (state, { payload: { type, key, value } }) =>
+            produce(state, (draft) => {
+                draft[type][key] = value;
+            }),
+        [INITIALIZE_FORM]: (state, { payload: type }) => ({
             ...state,
-            auth: asyncUtils.reducerUtils.success(action.payload)
-        }
+            [type]: initialState[type],
+        }),
+        [REGISTER_SUCCESS]: (state, action) => {
+            return {
+                ...state,
+                auth: asyncUtils.reducerUtils.success(action.payload),
+            };
+        },
+        [REGISTER_FAILURE]: (state, action) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.error(action.payload),
+            authError: action.payload.msg,
+        }),
+        [LOGIN]: (state) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.loading(),
+        }),
+        [LOGIN_SUCCESS]: (state, action) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.success(action.payload),
+            user: action.payload.data.user,
+        }),
+        [LOGIN_FAILURE]: (state, action) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.error(action.payload),
+            authError: action.payload.msg,
+        }),
+        [LOGOUT]: (state) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.loading(),
+            user: null,
+        }),
+        [LOGOUT_FINISHED]: (state) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.initial(),
+            user: null,
+        }),
+        [GET_USER]: (state) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.loading(),
+        }),
+        [GET_USER_SUCCESS]: (state, action) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.success(action.payload),
+            user: action.payload.user,
+        }),
+        [GET_USER_FAILURE]: (state, action) => ({
+            ...state,
+            auth: asyncUtils.reducerUtils.error(action.payload),
+            user: null,
+            authError: action.payload.msg,
+        }),
+        [FORM_ERROR]: (state, { payload: err }) => ({
+            ...state,
+            authError: err,
+        }),
     },
-    [REGISTER_FAILURE]: (state, action) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.error(action.payload),
-        authError: action.payload.msg
-    }),
-    [LOGIN]: (state) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.loading()
-    }),
-    [LOGIN_SUCCESS]: (state, action) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.success(action.payload),
-        user: action.payload.data.user
-    }),
-    [LOGIN_FAILURE]: (state, action) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.error(action.payload),
-        authError: action.payload.msg
-    }),
-    [LOGOUT]: (state) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.loading(),
-        user: null
-    }),
-    [LOGOUT_FINISHED]: (state) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.initial(),
-        user: null
-    }),
-    [GET_USER]: (state) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.loading()
-    }),
-    [GET_USER_SUCCESS]: (state, action) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.success(action.payload),
-        user: action.payload.user
-    }),
-    [GET_USER_FAILURE]: (state, action) => ({
-        ...state,
-        auth: asyncUtils.reducerUtils.error(action.payload),
-        user: null,
-        authError: action.payload.msg
-    }),
-    [FORM_ERROR]: (state, { payload: err }) => ({
-        ...state,
-        authError: err
-    })
-}, initialState);
+    initialState,
+);
 
 export default auth;
