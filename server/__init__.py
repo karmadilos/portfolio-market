@@ -10,7 +10,6 @@ from flask_jwt_extended import (
     get_jwt,
     create_access_token,
     set_access_cookies,
-    set_access_cookies,
 )
 from datetime import datetime, timedelta, timezone
 from database.db import db
