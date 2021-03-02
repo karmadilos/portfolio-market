@@ -1,9 +1,14 @@
 import React from 'react';
+import PageTemplate from '../components/PageTemplate';
 import RegisterForm from '../containers/auth/RegisterForm';
 
 function Register() {
     return (
-        <RegisterForm />
+        <PageTemplate>
+            <>
+                <RegisterForm />
+            </>
+        </PageTemplate>
     );
 }
 

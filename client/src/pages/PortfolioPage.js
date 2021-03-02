@@ -1,5 +1,6 @@
 import React from 'react';
 import PageTemplate from '../components/PageTemplate';
+import NavBar from '../containers/auth/NavBar';
 import AwardsContainer from '../containers/portfolio/AwardsContainer';
 import CertificateContainer from '../containers/portfolio/CertificateContainer';
 import EducationContainer from '../containers/portfolio/EducationContainer';
@@ -10,6 +11,7 @@ function Portfolio() {
     return (
         <PageTemplate>
             <>
+                <NavBar />
                 <ProfileContainer />
                 <EducationContainer />
                 <AwardsContainer />

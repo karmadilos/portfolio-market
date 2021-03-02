@@ -15,7 +15,7 @@ function Certificate({ mode }) {
                 padding: '10px 10px',
             }}
         >
-            {mode === 0 ? (
+            {mode !== 2 ? (
                 <>
                     <h3>자격증명</h3>
                     <h5>자격증 발급처</h5>

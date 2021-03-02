@@ -7,10 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faPen } from '@fortawesome/free-solid-svg-icons';
 
 function EducationContainer() {
+    const location = useLocation().pathname.split('/');
+    const [mode, setMode] = useState(0);
     const [eduTuples, setEduTuples] = useState([]);
     const [edu, setEdu] = useState([]);
     const [status, setStatus] = useState(false);
-    const location = useLocation().pathname.split('/');
+    const onClick = () => setMode(2);
     const addEdu = () => {
         API.postEdu(location[location.length - 1]).then((res) => {
             console.log(res.data);
@@ -24,7 +26,7 @@ function EducationContainer() {
             setEdu([
                 ...edu,
                 <Education
-                    mode={1}
+                    mode={mode}
                     key={payload.id}
                     school={payload.school}
                     major={payload.major}
@@ -38,7 +40,11 @@ function EducationContainer() {
     //     console.log(e.target);
     // };
     useEffect(() => {
-        console.log(location[location.length - 1]);
+        if (location[location.length - 1] === sessionStorage.getItem('id')) {
+            setMode(1);
+        } else {
+            setMode(0);
+        }
         if (!status) {
             API.getAllEdu(location[location.length - 1]).then((res) => {
                 console.log(res.data.data);
@@ -69,7 +75,7 @@ function EducationContainer() {
                             if (v.school_name || v.major)
                                 return (
                                     <Education
-                                        mode={0}
+                                        mode={mode}
                                         key={v.id}
                                         school={v.school_name}
                                         major={v.major}
@@ -89,15 +95,21 @@ function EducationContainer() {
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
             <h4>학력</h4>
             {edu}
-            <Button variant="primary">
-                <FontAwesomeIcon icon={faPen} />
-            </Button>
-            <Button variant="primary" onClick={addEdu}>
-                <FontAwesomeIcon icon={faPlus} />
-            </Button>
-            <Button variant="success">
-                <FontAwesomeIcon icon={faCheck} />
-            </Button>
+            {mode === 1 ? (
+                <Button variant="primary">
+                    <FontAwesomeIcon icon={faPen} onClick={onClick} />
+                </Button>
+            ) : null}
+            {mode === 2 ? (
+                <>
+                    <Button variant="primary" onClick={addEdu}>
+                        <FontAwesomeIcon icon={faPlus} />
+                    </Button>
+                    <Button variant="success">
+                        <FontAwesomeIcon icon={faCheck} />
+                    </Button>
+                </>
+            ) : null}
         </div>
     );
 }

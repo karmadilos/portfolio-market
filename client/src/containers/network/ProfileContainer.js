@@ -17,7 +17,7 @@ function ProfileContainer({ history }) {
         setSearch(e.target[0].value);
     };
 
-    const onClick = (e) => {
+    const goto = (e) => {
         console.log(e.target.id);
         // history.push(`/portfolio/${e.target.}`)
         history.push(`/portfolio/${e.target.id}`);
@@ -37,7 +37,7 @@ function ProfileContainer({ history }) {
                                 imgurl={v.img_url}
                                 name={v.user_name}
                                 comment={v.comment}
-                                onClick={onClick}
+                                goto={goto}
                             />
                         ));
                         let tmp = [],
@@ -85,7 +85,7 @@ function ProfileContainer({ history }) {
                                 imgurl={v.img_url}
                                 name={v.user_name}
                                 comment={v.comment}
-                                onClick={onClick}
+                                goto={goto}
                             />
                         ));
                         let tmp = [],

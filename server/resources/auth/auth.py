@@ -95,7 +95,7 @@ def logout():
 def get_user():
     identity = get_jwt_identity()
     if not identity:
-        abort(401, status="fail", msg="로그인이 필요합니다.")
+        jsonify(status="fail", msg="로그인이 필요합니다."), 401
     user = db.session.query(User).filter_by(id=identity).first()
     return jsonify(status="success", user={"id": identity, "fullname": user.fullname})
 
