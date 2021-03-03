@@ -5,7 +5,7 @@ from .user import User
 
 class Certificate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="SET NULL"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
     title = db.Column(db.String(50), nullable=False)
     organization = db.Column(db.String(50), nullable=False)
     acquisition_date = db.Column(db.DateTime, nullable=False)

@@ -46,7 +46,7 @@ class EducationApi(Resource):
         db.session.commit()
         return jsonify(
             status="success",
-            result={"id": education.id},
+            data={"id": education.id, "user_id": user_id},
         )
 
     def put(self, user_id, id=None):
@@ -81,7 +81,5 @@ class EducationApi(Resource):
         db.session.commit()
         return jsonify(
             status="success",
-            result={
-                "id": id,
-            },
+            result={"id": id, "user_id": user_id},
         )
