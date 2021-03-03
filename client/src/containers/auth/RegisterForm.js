@@ -53,6 +53,7 @@ function RegisterForm({ history }) {
     useEffect(() => {
         if (auth.data) history.push('/login');
     }, [authError, auth]);
+
     return (
         <AuthFormBlock
             type="register"
