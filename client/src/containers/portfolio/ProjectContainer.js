@@ -1,92 +1,41 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import * as API from '../../lib/apis/portfolio';
 import Project from '../../components/portfolio/Project';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faPen } from '@fortawesome/free-solid-svg-icons';
+import {
+    changeMode,
+    createProject,
+    readAllProject,
+    updateProject,
+} from '../../modules/project';
 
 function ProjectContainer() {
-    const location = useLocation().pathname.split('/');
-    const [mode, setMode] = useState(0);
-    const [pjTuples, setPjTuples] = useState([]);
-    const [pj, setPj] = useState([]);
-    const [status, setStatus] = useState(false);
-
-    const onClick = () => setMode(2);
-    const addEdu = () => {
-        API.postEdu(location[location.length - 1]).then((res) => {
-            console.log(res.data);
-            const payload = {
-                id: res.data.result.id,
-                school: '',
-                major: '',
-                status: 'attending',
-            };
-            setPjTuples([...pjTuples, payload]);
-            setPj([
-                ...pj,
-                <Project
-                    mode={0}
-                    key={payload.id}
-                    school={payload.school}
-                    major={payload.major}
-                    status={payload.status}
-                />,
-            ]);
-        });
-    };
-    // const onSubmit = (e) => {
-    //     e.prventDefault();
-    //     console.log(e.target);
-    // };
+    const uid = useLocation().pathname.split('/').at(-1);
+    // eslint-disable-next-line no-unused-vars
+    const { mode, status, projects, cache, error } = useSelector(
+        ({ project }) => ({
+            mode: project.mode,
+            status: project.mode,
+            projects: project.projects,
+            cache: project.cache,
+            error: project.error,
+        }),
+    );
+    const dispatch = useDispatch();
+    const setMode = () => dispatch(changeMode(2));
+    const addPj = () => dispatch(createProject(uid));
+    const updatePj = () => dispatch(updateProject({ uid, data: cache }));
     useEffect(() => {
-        if (location[location.length - 1] === sessionStorage.getItem('id')) {
-            setMode(1);
+        if (uid === sessionStorage.getItem('id')) {
+            dispatch(changeMode(1));
         } else {
-            setMode(0);
+            dispatch(changeMode(2));
         }
         if (!status) {
-            API.getAllEdu(location[location.length - 1]).then((res) => {
-                console.log(res.data.data);
-                const payload = res.data.data;
-                setPjTuples(
-                    payload.map((v) => ({
-                        id: v.id,
-                        school: v.school_name,
-                        major: v.major,
-                        status: v.status,
-                    })),
-                );
-                if (payload.length === 1) {
-                    // 등록된 데이터가 기본값밖에 없으면 출력
-                    if (!payload[0].school_name && !payload[0].major)
-                        setPj([
-                            <Project
-                                mode={0}
-                                key={0}
-                                school="학력 정보가 없습니다"
-                                major="전공 정보"
-                                status=""
-                            />,
-                        ]);
-                } else {
-                    setPj(
-                        payload.map((v) => (
-                            <Project
-                                mProject
-                                key={v.id}
-                                school={v.school_name}
-                                major={v.major}
-                                status={v.status}
-                                eduTuples={pjTuples}
-                                addEdu={addEdu}
-                            />
-                        )),
-                    );
-                }
-                setStatus(true);
-            });
+            dispatch(readAllProject(uid));
         }
     }, [status]);
     return (

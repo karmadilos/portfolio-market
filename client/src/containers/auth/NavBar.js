@@ -8,10 +8,7 @@ import { getUser } from '../../lib/apis/auth';
 import { Nav, Navbar, Alert } from 'react-bootstrap';
 
 function NavBar({ history }) {
-    const { id, fullname } = {
-        id: sessionStorage.getItem('id'),
-        fullname: sessionStorage.getItem('fullname'),
-    };
+    const [user, setUser] = useState({ id: '', fullname: '' });
     // const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
@@ -19,10 +16,10 @@ function NavBar({ history }) {
         e.preventDefault();
         dispatch(logout());
     };
-    // const catchUser = () => ({
-    //     id: localStorage.getItem('id'),
-    //     fullname: localStorage.getItem('fullname'),
-    // });
+    const catchUser = () => ({
+        id: sessionStorage.getItem('id'),
+        fullname: sessionStorage.getItem('fullname'),
+    });
     const resetUser = async () => {
         try {
             const res = await getUser();
@@ -32,6 +29,7 @@ function NavBar({ history }) {
             console.log(id, fullname);
             sessionStorage.setItem('id', id);
             sessionStorage.setItem('fullname', fullname);
+            setUser(catchUser());
         } catch (err) {
             console.log(err.response.data);
             setError(err.response.msg);
@@ -44,10 +42,10 @@ function NavBar({ history }) {
         if (!getCookie('csrf_access_token')) {
             // setUser(null);
             sessionStorage.clear();
-        } else if (!id || !fullname) {
+        } else if (!user.id || !user.fullname) {
             resetUser();
         }
-    }, [id, fullname]);
+    }, [user]);
     return (
         <>
             {error && <Alert variant="fail">{error}</Alert>}
@@ -67,19 +65,19 @@ function NavBar({ history }) {
                 </Nav>
                 <Navbar.Collapse className="justify-content-end">
                     <Nav>
-                        {!id || !fullname ? (
+                        {!user.id || !user.fullname ? (
                             <>
                                 <Nav.Link href="/login">Login</Nav.Link>
                                 <Nav.Link href="/register">Register</Nav.Link>
                             </>
                         ) : (
                             <>
-                                {id && fullname && (
+                                {user.id && user.fullname && (
                                     <Nav.Link
-                                        href={'/portfolio/' + id}
+                                        href={'/portfolio/' + user.id}
                                         style={{ fontWeight: 'bold' }}
                                     >
-                                        {fullname}
+                                        {user.fullname}
                                     </Nav.Link>
                                 )}
                                 <Nav.Link href="" onClick={onClick}>

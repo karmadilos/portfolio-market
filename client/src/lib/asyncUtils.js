@@ -16,15 +16,16 @@ export const createPromiseThunk = (type, promiseCreator) => {
     // 예: writeComment({ postId: 1, text: '댓글 내용' });
     return (param) => async (dispatch) => {
         // 요청 시작
+        console.log(param);
         dispatch({ type, param });
         try {
             // 결과물의 이름을 payload 라는 이름으로 통일시킵니다.
             const payload = await promiseCreator(param);
-            dispatch({ type: SUCCESS, payload }); // 성공
             console.log(payload);
+            dispatch({ type: SUCCESS, payload }); // 성공
         } catch (e) {
-            dispatch({ type: FAILURE, payload: e.response.data, error: true }); // 실패
             console.log(e.response.data);
+            dispatch({ type: FAILURE, payload: e.response.data, error: true }); // 실패
         }
     };
 };

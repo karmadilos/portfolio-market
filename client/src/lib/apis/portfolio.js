@@ -11,26 +11,23 @@ console.log(process.env.REACT_APP_HOST);
 학력 정보 CRUD API
 ****************
 */
-export const getAllEdu = (user_id) =>
-    request('get', process.env.REACT_APP_HOST + `/education/${user_id}`);
+export const getAllEdu = ({ uid }) =>
+    request('get', process.env.REACT_APP_HOST + `/education/${uid}`);
 
-export const postEdu = (user_id) =>
-    requestWithJWT(
-        'post',
-        process.env.REACT_APP_HOST + `/education/${user_id}`,
-    );
+export const postEdu = ({ uid }) =>
+    requestWithJWT('post', process.env.REACT_APP_HOST + `/education/${uid}`);
 
-export const putEdu = (user_id, data) =>
+export const putEdu = ({ uid, data }) =>
     requestWithJWT(
         'put',
-        process.env.REACT_APP_HOST + `/education/${user_id}`,
+        process.env.REACT_APP_HOST + `/education/${uid}`,
         data,
     );
 
-export const deleteEdu = (user_id, id) =>
+export const deleteEdu = ({ uid, id }) =>
     requestWithJWT(
         'delete',
-        process.env.REACT_APP_HOST + `/education/${user_id}/${id}`,
+        process.env.REACT_APP_HOST + `/education/${uid}/${id}`,
     );
 
 /*
@@ -38,23 +35,19 @@ export const deleteEdu = (user_id, id) =>
 수상 정보 CRUD API
 ****************
 */
-export const getAwards = (user_id) =>
-    request('get', process.env.REACT_APP_HOST + `/awards/${user_id}`);
+export const getAllAwd = ({ uid }) =>
+    request('get', process.env.REACT_APP_HOST + `/awards/${uid}`);
 
-export const postAwards = (user_id) =>
-    requestWithJWT('post', process.env.REACT_APP_HOST + `/awards/${user_id}`);
+export const postAwd = ({ uid }) =>
+    requestWithJWT('post', process.env.REACT_APP_HOST + `/awards/${uid}`);
 
-export const putAwards = (user_id, data) =>
-    requestWithJWT(
-        'put',
-        process.env.REACT_APP_HOST + `/awards/${user_id}`,
-        data,
-    );
+export const putAwd = ({ uid, data }) =>
+    requestWithJWT('put', process.env.REACT_APP_HOST + `/awards/${uid}`, data);
 
-export const deleteAwards = (user_id, id) =>
+export const deleteAwd = ({ uid, id }) =>
     requestWithJWT(
         'delete',
-        process.env.REACT_APP_HOST + `/awards/${user_id}/${id}`,
+        process.env.REACT_APP_HOST + `/awards/${uid}/${id}`,
     );
 
 /*
@@ -62,23 +55,19 @@ export const deleteAwards = (user_id, id) =>
 프로젝트 정보 CRUD API
 *******************
 */
-export const getProjects = (user_id) =>
-    request('get', process.env.REACT_APP_HOST + `/project/${user_id}`);
+export const getAllPj = ({ uid }) =>
+    request('get', process.env.REACT_APP_HOST + `/project/${uid}`);
 
-export const postProjects = (user_id) =>
-    requestWithJWT('post', process.env.REACT_APP_HOST + `/project/${user_id}`);
+export const postPj = ({ uid }) =>
+    requestWithJWT('post', process.env.REACT_APP_HOST + `/project/${uid}`);
 
-export const putProject = (user_id, data) =>
-    requestWithJWT(
-        'put',
-        process.env.REACT_APP_HOST + `/project/${user_id}`,
-        data,
-    );
+export const putPj = ({ uid, data }) =>
+    requestWithJWT('put', process.env.REACT_APP_HOST + `/project/${uid}`, data);
 
-export const deleteProject = (user_id, id) =>
+export const deletePj = ({ uid, id }) =>
     requestWithJWT(
         'delete',
-        process.env.REACT_APP_HOST + `/project/${user_id}/${id}`,
+        process.env.REACT_APP_HOST + `/project/${uid}/${id}`,
     );
 
 /*

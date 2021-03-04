@@ -2,7 +2,7 @@ import { request } from './client';
 import dotenv from 'dotenv';
 
 dotenv.config();
-console.log(process.env.REACT_APP_HOST + '/profile');
+console.log(process.env.REACT_APP_HOST);
 export const getAllProfile = (search) =>
     !search
         ? request('get', process.env.REACT_APP_HOST + '/profile')

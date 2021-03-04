@@ -1,112 +1,89 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import * as API from '../../lib/apis/portfolio';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+    changeMode,
+    createEducation,
+    readAllEducations,
+    updateEducation,
+} from '../../modules/education';
 import Education from '../../components/portfolio/Education';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faPen } from '@fortawesome/free-solid-svg-icons';
 
 function EducationContainer() {
-    const location = useLocation().pathname.split('/');
-    const [mode, setMode] = useState(0);
-    const [eduTuples, setEduTuples] = useState([]);
-    const [edu, setEdu] = useState([]);
-    const [status, setStatus] = useState(false);
-    const onClick = () => setMode(2);
-    const addEdu = () => {
-        API.postEdu(location[location.length - 1]).then((res) => {
-            console.log(res.data);
-            const payload = {
-                id: res.data.result.id,
-                school: '',
-                major: '',
-                status: 'attending',
-            };
-            setEduTuples([...eduTuples, payload]);
-            setEdu([
-                ...edu,
-                <Education
-                    mode={mode}
-                    key={payload.id}
-                    school={payload.school}
-                    major={payload.major}
-                    status={payload.status}
-                />,
-            ]);
-        });
+    // uid = 현재 포트폴리오 사이트의 userID
+    const uid = useLocation().pathname.split('/').at(-1);
+    const dispatch = useDispatch();
+    // eslint-disable-next-line no-unused-vars
+    const { mode, educations, error, cache, status } = useSelector(
+        ({ education }) => ({
+            mode: education.mode,
+            educations: education.educations,
+            error: education.error,
+            cache: education.cache,
+            status: education.status,
+        }),
+    );
+    const setMode = () => dispatch(changeMode(2));
+    const addEdu = () => dispatch(createEducation({ uid }));
+    const updateEdu = () => {
+        dispatch(updateEducation({ uid, data: cache }));
+        dispatch(changeMode(1));
     };
-    // const onSubmit = (e) => {
-    //     e.prventDefault();
-    //     console.log(e.target);
-    // };
     useEffect(() => {
-        if (location[location.length - 1] === sessionStorage.getItem('id')) {
-            setMode(1);
+        console.log(uid, sessionStorage.getItem('id'));
+        if (uid === sessionStorage.getItem('id')) {
+            dispatch(changeMode(1));
         } else {
-            setMode(0);
+            dispatch(changeMode(0));
         }
         if (!status) {
-            API.getAllEdu(location[location.length - 1]).then((res) => {
-                console.log(res.data.data);
-                const payload = res.data.data;
-                setEduTuples(
-                    payload.map((v) => ({
-                        id: v.id,
-                        school: v.school_name,
-                        major: v.major,
-                        status: v.status,
-                    })),
-                );
-                if (payload.length === 1) {
-                    // 등록된 데이터가 기본값밖에 없으면 출력
-                    if (!payload[0].school_name && !payload[0].major)
-                        setEdu([
-                            <Education
-                                mode={0}
-                                key={0}
-                                school="학력 정보가 없습니다"
-                                major="전공 정보"
-                                status=""
-                            />,
-                        ]);
-                } else {
-                    setEdu(
-                        payload.map((v) => {
-                            if (v.school_name || v.major)
-                                return (
-                                    <Education
-                                        mode={mode}
-                                        key={v.id}
-                                        school={v.school_name}
-                                        major={v.major}
-                                        status={v.status}
-                                        eduTuples={eduTuples}
-                                        addEdu={addEdu}
-                                    />
-                                );
-                        }),
-                    );
-                }
-                setStatus(true);
-            });
+            dispatch(readAllEducations({ uid }));
         }
     }, [status]);
     return (
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
             <h4>학력</h4>
-            {edu}
+            {educations.length > 0 ? (
+                educations.map((edu) => (
+                    <Education
+                        key={edu.id}
+                        eid={edu.id}
+                        uid={uid}
+                        school={edu.school_name}
+                        major={edu.major}
+                        status={edu.status}
+                    />
+                ))
+            ) : (
+                <Col
+                    md={12}
+                    style={{
+                        margin: '20px 0px',
+                        textAlign: 'center',
+                        padding: '10px 10px',
+                    }}
+                >
+                    항목이 비었습니다.
+                </Col>
+            )}
             {mode === 1 ? (
+                // change mode
                 <Button variant="primary">
-                    <FontAwesomeIcon icon={faPen} onClick={onClick} />
+                    <FontAwesomeIcon icon={faPen} onClick={setMode} />
                 </Button>
             ) : null}
             {mode === 2 ? (
                 <>
+                    {/* post */}
                     <Button variant="primary" onClick={addEdu}>
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>
+                    {/* put */}
                     <Button variant="success">
-                        <FontAwesomeIcon icon={faCheck} />
+                        <FontAwesomeIcon icon={faCheck} onClick={updateEdu} />
                     </Button>
                 </>
             ) : null}

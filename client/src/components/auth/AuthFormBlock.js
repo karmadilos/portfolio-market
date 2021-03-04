@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Button, Alert, Container, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 const types = {
     login: '로그인',
-    register: '회원가입'
-}
+    register: '회원가입',
+};
 
 function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
     const text = types[type];
@@ -64,23 +64,23 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                             {text}
                         </Button>
                     </Form>
-                    {(type === 'login') ? (
-                        <Alert variant="secondary" style={{ marginTop: "20px" }}>
+                    {type === 'login' ? (
+                        <Alert
+                            variant="secondary"
+                            style={{ marginTop: '20px' }}
+                        >
                             회원이 아니라면 👉🏻
-                            <Link to="/register">회원가입</Link>
+                            <a href="/register">회원가입</a>
                         </Alert>
-                    )
-                        : (
-                            <Alert variant="secondary" style={{ marginTop: "20px" }}>
-                                계정이 있다면 👉🏻 <Link to="/login">로그인</Link>
-                            </Alert>
-                        )
-                    }
-                    {error && (
-                        <Alert variant="danger">
-                            {error}
+                    ) : (
+                        <Alert
+                            variant="secondary"
+                            style={{ marginTop: '20px' }}
+                        >
+                            계정이 있다면 👉🏻 <a href="/login">로그인</a>
                         </Alert>
                     )}
+                    {error && <Alert variant="danger">{error}</Alert>}
                 </Col>
             </Row>
         </Container>
@@ -92,7 +92,7 @@ AuthFormBlock.propTypes = {
     form: PropTypes.object,
     onChange: PropTypes.func,
     onSubmit: PropTypes.func,
-    error: PropTypes.string
-}
+    error: PropTypes.string,
+};
 
 export default AuthFormBlock;

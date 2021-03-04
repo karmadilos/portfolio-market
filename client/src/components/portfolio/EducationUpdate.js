@@ -2,14 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 import UpdateForm from './UpdateForm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-function EducationUpdate({ check, edu, onClick, onChange }) {
+function EducationUpdate({ check, edu, onClick, onChange, onDelete }) {
     // 학교이름, 전공, 현재 상태를 입력받는 폼 형태
     // 용도는
     // (1) 사용자가 수정버튼 눌렀을때, 현재 정보를 담아올 Component
     // (2) 사용자가 새로운 정보를 추가하고자 할 때, 추가버튼을 누르면 생성될 Component
+
     const inputStyle = {
         margin: '0px 10px',
+    };
+    const aStyle = {
+        opacity: '0.5',
+        fontSize: '1.3rem',
     };
     return (
         <UpdateForm>
@@ -41,7 +48,8 @@ function EducationUpdate({ check, edu, onClick, onChange }) {
                         onClick={onClick}
                         style={inputStyle}
                     />
-                    <label htmlFor="attending">재학중</label>
+                    {/* <label htmlFor="attending">재학중</label> */}
+                    <label>재학중</label>
                     <input
                         type="radio"
                         id="bachelor"
@@ -51,8 +59,8 @@ function EducationUpdate({ check, edu, onClick, onChange }) {
                         onClick={onClick}
                         style={inputStyle}
                     />
-                    <label htmlFor="bachelor">학사 졸업</label>
-
+                    {/* <label htmlFor="bachelor">학사 졸업</label> */}
+                    <label>학사 졸업</label>
                     <input
                         type="radio"
                         id="master"
@@ -62,8 +70,8 @@ function EducationUpdate({ check, edu, onClick, onChange }) {
                         onClick={onClick}
                         style={inputStyle}
                     />
-                    <label htmlFor="master">석사 졸업</label>
-
+                    {/* <label htmlFor="master">석사 졸업</label> */}
+                    <label>석사 졸업</label>
                     <input
                         type="radio"
                         id="doctor"
@@ -73,7 +81,14 @@ function EducationUpdate({ check, edu, onClick, onChange }) {
                         onClick={onClick}
                         style={inputStyle}
                     />
+                    {/* <label htmlFor="doctor">박사 졸업</label> */}
                     <label htmlFor="doctor">박사 졸업</label>
+                </div>
+                <div>
+                    {/* delete */}
+                    <a style={aStyle}>
+                        <FontAwesomeIcon icon={faTrash} onClick={onDelete} />
+                    </a>
                 </div>
             </>
         </UpdateForm>
@@ -85,6 +100,7 @@ EducationUpdate.propTypes = {
     edu: PropTypes.object,
     onClick: PropTypes.func,
     onChange: PropTypes.func,
+    onDelete: PropTypes.func,
 };
 
 export default EducationUpdate;

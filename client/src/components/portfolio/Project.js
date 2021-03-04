@@ -4,9 +4,15 @@ import { Form, FormControl, Row, Col } from 'react-bootstrap';
 import UpdateForm from './UpdateForm';
 import DatePicker from 'react-datepicker';
 
-function Project({ mode }) {
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+function Project({ uid, pid, mode, title, desc, start, end }) {
+    const [startDate, setStartDate] = useState(new Date(start));
+    const [endDate, setEndDate] = useState(new Date(end));
+    const dateOutput =
+        start && end
+            ? `${start} - ${end}`
+            : !start
+            ? `${end} - ${end}`
+            : `${start} - ${start}`;
     return (
         <Form
             md={12}
@@ -18,10 +24,15 @@ function Project({ mode }) {
         >
             {mode === 0 ? (
                 <>
-                    <h3>프로젝트명</h3>
-                    <h5>프로젝트 설명</h5>
+                    <h3>{title ? title : '프로젝트명'}</h3>
+                    <h5>{desc ? desc : '프로젝트 설명'}</h5>
                     <p style={{ color: 'gray' }}>
-                        {'2021년 01월 01일 - 2021년 01년 31일'}
+                        {/**
+                         * start만 있으면, end는 오늘날짜
+                         * end만 있으면, start는 end
+                         * 둘 다 없으면 둘 다 오늘날짜
+                         */}
+                        {dateOutput}
                     </p>
                 </>
             ) : (
