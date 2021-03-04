@@ -1,9 +1,23 @@
 from flask import jsonify, request
 from flask_restful import reqparse, abort, Api, Resource
+from flask_cors import cross_origin
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
 from database.models.education import Education
 from database.db import db
+from resources.auth.auth import jwt
 import datetime
+import maya
 
+keys = [
+    "id",
+    "user_id",
+    "school_name",
+    "major",
+    "status",
+    "create_date",
+    "updated_date",
+]
 # 토큰 방식으로 구현 후, post/put/delete 작업은
 # 토큰 검증방식을 거친 후 접근할 수 있도록 처리하는 것 필요
 class EducationApi(Resource):
@@ -22,53 +36,48 @@ class EducationApi(Resource):
         if not educations:
             jsonify(status="success", data=[])
 
-        keys = [
-            "id",
-            "user_id",
-            "school_name",
-            "major",
-            "status",
-            "create_date",
-            "updated_date",
-        ]
         result = [{key: getattr(v, key) for key in keys} for v in educations]
         return jsonify(
             status="success",
-            data=result,
+            educations=result,
         )
 
     def post(self, user_id):
-        if not user_id:
-            abort(401, status="fail", msg="접근 권한이 없습니다.")
+        # print(get_jwt_identity())
+        # if get_jwt_identity() != int(user_id):
+        #     abort(401, status="fail", message="접근 권한이 없습니다.")
         # school_name, major, status = dict(request.get_json(force=True)).values()
+        print(request.cookies.get("csrf-access-token"))
         education = Education(user_id)
         db.session.add(education)
         db.session.commit()
         return jsonify(
             status="success",
-            data={"id": education.id, "user_id": user_id},
+            result={key: getattr(education, key) for key in keys},
         )
 
     def put(self, user_id, id=None):
-        if not user_id:
-            abort(401, status="fail", msg="접근 권한이 없습니다.")
+        # if get_jwt_identity() != int(user_id):
+        #     abort(401, status="fail", message="접근 권한이 없습니다.")
         # 여러개의 데이터를 동시에 수정한다. (data에 배열로 수정 내용을 입력받음)
         data = request.get_json(force=True)
-        # print(data["data"])
-        for v in data["data"]:
+        print(data)
+        for v in data:
             v["updated_date"] = datetime.datetime.utcnow()
+            v["create_date"] = maya.parse(v["create_date"]).datetime()
             db.session.query(Education).filter_by(id=v["id"]).update(v)
         db.session.commit()
         return jsonify(
             status="success",
-            result={"id": list(map(lambda x: x["id"], data["data"]))},
+            result={"id": list(map(lambda x: x["id"], data))},
         )
 
+    # @jwt_required
     def delete(self, user_id, id):
-        if not user_id:
-            abort(401, status="fail", msg="접근 권한이 없습니다.")
+        # if get_jwt_identity() != int(user_id):
+        #     abort(401, status="fail", message="접근 권한이 없습니다.")
         if not id:
-            abort(400, status="fail", msg="삭제할 데이터가 없습니다.")
+            abort(400, status="fail", message="삭제할 데이터가 없습니다.")
 
         education = Education.query.filter_by(user_id=user_id, id=id).first()
 

@@ -1,6 +1,7 @@
 import os
 from flask import jsonify, request, Blueprint, session
 from flask_restful import abort
+from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
@@ -15,6 +16,7 @@ from database.models.certificate import Certificate
 from database.db import db
 
 auth = Blueprint("auth", __name__)
+jwt = JWTManager()
 
 
 @auth.route("/register", methods=["POST"])
@@ -61,19 +63,6 @@ def login():
             jsonify(status="fail", msg="아이디 또는 비밀번호를 확인하세요."),
             400,
         )
-    # 세션 방식
-    # user_id = session.get("user_id")
-    # # 기존에 로그인한 계정이 있다면
-    # if user_id:
-    #     return (
-    #         jsonify(
-    #             status="fail",
-    #             message="Invalid access: already logined",
-    #         ),
-    #         401,
-    #     )
-    # session["user_id"] = email
-    # return jsonify(status="success", session=session.get("user_id"))
     response = jsonify(
         status="success", user={"id": user.id, "fullname": user.fullname}
     )
@@ -94,31 +83,8 @@ def logout():
 @jwt_required()
 def get_user():
     identity = get_jwt_identity()
+    print(identity)
     if not identity:
         jsonify(status="fail", msg="로그인이 필요합니다."), 401
     user = db.session.query(User).filter_by(id=identity).first()
     return jsonify(status="success", user={"id": identity, "fullname": user.fullname})
-
-
-# 세션 방식
-# @auth.route("/logout")
-# def logout():
-#     user_id = session.get("user_id")
-#     print(user_id)
-#     # 기존에 로그인한 계정이 없다면
-#     if not user_id:
-#         return (
-#             jsonify(
-#                 status="fail",
-#                 message="Invalid access: there is no account to log out.",
-#             ),
-#             401,
-#         )
-#     session.pop("user_id", None)
-#     return jsonify(status="success")
-
-# 세션 방식
-# @auth.before_request
-# def set_session_permanent():
-#     session.permanent = True
-#     auth.permanent_session_lifetime = timedelta(minutes=5)

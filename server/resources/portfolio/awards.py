@@ -3,7 +3,16 @@ from flask_restful import reqparse, abort, Api, Resource
 from database.models.awards import Awards
 from database.db import db
 import datetime
+import maya
 
+keys = [
+    "id",
+    "user_id",
+    "award_title",
+    "award_desc",
+    "create_date",
+    "updated_date",
+]
 # 토큰 방식으로 구현 후, post/put/delete 작업은
 # 토큰 검증방식을 거친 후 접근할 수 있도록 처리하는 것 필요
 class AwardsApi(Resource):
@@ -23,27 +32,18 @@ class AwardsApi(Resource):
         if not awards:
             jsonify(status="success", data=[])
 
-        keys = [
-            "id",
-            "user_id",
-            "award_title",
-            "award_desc",
-            "create_date",
-            "updated_date",
-        ]
         result = [{key: getattr(v, key) for key in keys} for v in awards]
-        return jsonify(status="success", data=result)
+        return jsonify(status="success", awards=result)
 
     def post(self, user_id):
         if not user_id:
             abort(401, status="fail", msg="접근 권한이 없습니다.")
-        award_title, award_desc = dict(request.get_json(force=True)).values()
-        awards = Awards(user_id, award_title, award_desc)
-        db.session.add(Awards)
+        awards = Awards(user_id)
+        db.session.add(awards)
         db.session.commit()
         return jsonify(
             status="success",
-            result={"_id": awards.id},
+            result={key: getattr(awards, key) for key in keys},
         )
 
     def put(self, user_id, id=None):
@@ -53,12 +53,14 @@ class AwardsApi(Resource):
         # 여러개의 데이터를 동시에 수정한다. (data에 배열로 수정 내용을 입력받음)
         data = request.get_json(force=True)
         # print(data["data"])
-        for v in data["data"]:
+        for v in data:
+            v["updated_date"] = datetime.datetime.utcnow()
+            v["create_date"] = maya.parse(v["create_date"]).datetime()
             db.session.query(Awards).filter_by(id=v["id"]).update(v)
         db.session.commit()
         return jsonify(
             status="success",
-            result={"_id": list(map(lambda x: x["id"], data["data"]))},
+            result={"_id": list(map(lambda x: x["id"], data))},
         )
 
     def delete(self, user_id, id):
