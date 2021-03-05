@@ -71,22 +71,24 @@ const initialState = {
     awards: [],
     cache: [],
     mode: 0,
-    status: false,
+    currentPage: 0,
     error: null,
 };
 
 const awards = handleActions(
     {
+        [READ_AWARDS]: (state, action) => ({
+            ...state,
+            currentPage: action.param.uid,
+        }),
         [READ_AWARDS_SUCCESS]: (state, { payload: data }) => ({
             ...state,
             awards: data.data.awards,
             cache: data.data.awards,
-            status: true,
         }),
         [READ_AWARDS_FAILURE]: (state, action) => ({
             ...state,
             error: action.payload.message,
-            status: false,
         }),
         [CREATE_AWARDS_SUCCESS]: (state, { payload: data }) => ({
             ...state,

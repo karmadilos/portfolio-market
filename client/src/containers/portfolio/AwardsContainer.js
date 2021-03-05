@@ -15,7 +15,7 @@ import {
 function AwardsContainer() {
     const uid = useLocation().pathname.split('/').at(-1);
     // eslint-disable-next-line no-unused-vars
-    const { mode, status, awards, cache, error } = useSelector(
+    const { mode, awards, cache, error, currentPage } = useSelector(
         ({ awards }) => ({
             mode: awards.mode,
             status: awards.status,
@@ -31,16 +31,17 @@ function AwardsContainer() {
         dispatch(updateAwards({ uid, data: cache }));
         dispatch(changeMode(1));
     };
+
     useEffect(() => {
         if (uid === sessionStorage.getItem('id')) {
             dispatch(changeMode(1));
         } else {
             dispatch(changeMode(0));
         }
-        if (!status) {
+        if (!currentPage || uid != currentPage) {
             dispatch(readAllAwards({ uid }));
         }
-    }, [status]);
+    }, [currentPage]);
 
     return (
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>

@@ -75,24 +75,21 @@ export const deletePj = ({ uid, id }) =>
 자격증 정보 CRUD API
 ******************
 */
-export const getCertificate = (user_id) =>
-    request('get', process.env.REACT_APP_HOST + `/certificate/${user_id}`);
+export const getAllCert = ({ uid }) =>
+    request('get', process.env.REACT_APP_HOST + `/certificate/${uid}`);
 
-export const postCertificate = (user_id) =>
-    requestWithJWT(
-        'post',
-        process.env.REACT_APP_HOST + `/certificate/${user_id}`,
-    );
+export const postCert = ({ uid }) =>
+    requestWithJWT('post', process.env.REACT_APP_HOST + `/certificate/${uid}`);
 
-export const putCertificate = (user_id, data) =>
+export const putCert = ({ uid, data }) =>
     requestWithJWT(
         'put',
-        process.env.REACT_APP_HOST + `/certificate/${user_id}`,
+        process.env.REACT_APP_HOST + `/certificate/${uid}`,
         data,
     );
 
-export const deleteCertificate = (user_id, id) =>
+export const deleteCert = ({ uid, id }) =>
     requestWithJWT(
         'delete',
-        process.env.REACT_APP_HOST + `/certificate/${user_id}/${id}`,
+        process.env.REACT_APP_HOST + `/certificate/${uid}/${id}`,
     );

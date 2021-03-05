@@ -4,6 +4,7 @@ import loading from './loading';
 import education from './education';
 import awards from './awards';
 import project from './project';
+import certificate from './certificate';
 
 const rootReducer = combineReducers({
     auth,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
     education,
     awards,
     project,
+    certificate,
 });
 
 export default rootReducer;

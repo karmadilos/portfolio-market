@@ -6,7 +6,7 @@ const client = axios.create();
 client.defaults.withCredentials = true;
 export const request = (method, url, data) => {
     console.log(url);
-    return axios({
+    return client({
         method,
         url,
         data,
@@ -14,8 +14,7 @@ export const request = (method, url, data) => {
 };
 
 export const requestWithJWT = (method, url, data) => {
-    console.log(url);
-    return axios({
+    return client({
         method,
         url,
         data,

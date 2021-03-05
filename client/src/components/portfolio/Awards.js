@@ -24,7 +24,7 @@ function Awards({ uid, aid, mode, awardTitle, awardDesc }) {
         dispatch(setCache({ aid, key, value }));
     };
     const onDelete = () => dispatch(deleteAwards({ uid, id: aid }));
-    if (!awardTitle && !awardDesc) return <></>;
+    // if (!awardTitle && !awardDesc) return <></>;
     return (
         <Form
             md={12}

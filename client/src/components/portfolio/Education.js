@@ -39,7 +39,7 @@ function Education({ eid, uid, school, major, status }) {
     const onDelete = () => dispatch(deleteEducation({ uid, id: eid }));
     const eState = map[status] ? `(${map[status]})` : '(학력 상태)';
     // mode가 0,1 이면 view, mode가 2이면 update
-    if (!school && !major) return <></>;
+    // if (!school && !major) return <></>;
     return (
         <Form
             md={12}

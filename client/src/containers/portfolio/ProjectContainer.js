@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import Project from '../../components/portfolio/Project';
@@ -15,10 +15,10 @@ import {
 function ProjectContainer() {
     const uid = useLocation().pathname.split('/').at(-1);
     // eslint-disable-next-line no-unused-vars
-    const { mode, status, projects, cache, error } = useSelector(
+    const { mode, projects, cache, error, currentPage } = useSelector(
         ({ project }) => ({
             mode: project.mode,
-            status: project.mode,
+            status: project.status,
             projects: project.projects,
             cache: project.cache,
             error: project.error,
@@ -26,34 +26,50 @@ function ProjectContainer() {
     );
     const dispatch = useDispatch();
     const setMode = () => dispatch(changeMode(2));
-    const addPj = () => dispatch(createProject(uid));
-    const updatePj = () => dispatch(updateProject({ uid, data: cache }));
+    const addPj = () => dispatch(createProject({ uid }));
+    const updatePj = () => {
+        dispatch(updateProject({ uid, data: cache }));
+        dispatch(changeMode(1));
+    };
     useEffect(() => {
+        console.log(uid, sessionStorage.getItem('id'));
         if (uid === sessionStorage.getItem('id')) {
             dispatch(changeMode(1));
         } else {
-            dispatch(changeMode(2));
+            dispatch(changeMode(0));
         }
-        if (!status) {
-            dispatch(readAllProject(uid));
+        if (!currentPage || uid != currentPage) {
+            dispatch(readAllProject({ uid }));
         }
-    }, [status]);
+    }, [currentPage]);
     return (
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
             <h4>프로젝트</h4>
-            <Project mode={mode} />
-            {/* {pj} */}
+            {projects.map((pj) => (
+                <Project
+                    key={pj.id}
+                    uid={uid}
+                    pid={pj.id}
+                    mode={mode}
+                    title={pj.title}
+                    desc={pj.desc}
+                    start={pj.start_date}
+                    end={pj.end_date}
+                />
+            ))}
             {mode === 1 ? (
-                <Button variant="primary">
-                    <FontAwesomeIcon icon={faPen} onClick={onClick} />
+                <Button variant="primary" onClick={setMode}>
+                    <FontAwesomeIcon icon={faPen} />
                 </Button>
             ) : null}
             {mode === 2 ? (
                 <>
-                    <Button variant="primary" onClick={addEdu}>
+                    {/* post */}
+                    <Button variant="primary" onClick={addPj}>
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>
-                    <Button variant="success">
+                    {/* put */}
+                    <Button variant="success" onClick={updatePj}>
                         <FontAwesomeIcon icon={faCheck} />
                     </Button>
                 </>

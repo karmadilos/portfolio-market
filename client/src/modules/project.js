@@ -71,26 +71,28 @@ const initialState = {
     projects: [],
     cache: [],
     mode: 0,
-    status: false,
+    currentPage: 0,
     error: null,
 };
 
 const project = handleActions(
     {
+        [READ_PROJECT]: (state, action) => ({
+            ...state,
+            currentPage: action.param.uid,
+        }),
         [READ_PROJECT_SUCCESS]: (state, { payload: data }) => ({
             ...state,
-            PROJECT: data.data.projects,
+            projects: data.data.projects,
             cache: data.data.projects,
-            status: true,
         }),
         [READ_PROJECT_FAILURE]: (state, action) => ({
             ...state,
             error: action.payload.message,
-            status: false,
         }),
         [CREATE_PROJECT_SUCCESS]: (state, { payload: data }) => ({
             ...state,
-            PROJECT: [...(state.projects || []), data.data.result],
+            projects: [...(state.projects || []), data.data.result],
             cache: [...(state.projects || []), data.data.result],
             error: null,
         }),
@@ -100,7 +102,7 @@ const project = handleActions(
         }),
         [UPDATE_PROJECT_SUCCESS]: (state) => ({
             ...state,
-            PROJECT: state.cache,
+            projects: state.cache,
             error: null,
         }),
         [UPDATE_PROJECT_FAILURE]: (state, action) => ({
@@ -114,7 +116,7 @@ const project = handleActions(
         }),
         [DELETE_PROJECT_SUCCESS]: (state) => ({
             ...state,
-            PROJECT: state.cache,
+            projects: state.cache,
             error: null,
         }),
         [DELETE_PROJECT_FAILURE]: (state, action) => ({
@@ -123,9 +125,9 @@ const project = handleActions(
             error: action.payload.message,
         }),
         [RESET_PROJECT]: () => initialState,
-        [SET_CACHE]: (state, { payload: { aid, key, value } }) =>
+        [SET_CACHE]: (state, { payload: { pid, key, value } }) =>
             produce(state, (draft) => {
-                const project = draft.cache.find((awd) => awd.id === aid);
+                const project = draft.cache.find((pj) => pj.id === pid);
                 project[key] = value;
             }),
         [CHANGE_MODE]: (state, { payload: mode }) => ({

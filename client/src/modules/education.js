@@ -71,22 +71,24 @@ const initialState = {
     educations: [],
     cache: [],
     mode: 0,
-    status: false,
+    currentPage: 0,
     error: null,
 };
 
 const education = handleActions(
     {
+        [READ_EDUCATION]: (state, action) => ({
+            ...state,
+            currentPage: action.param.uid,
+        }),
         [READ_EDUCATION_SUCCESS]: (state, { payload: data }) => ({
             ...state,
             educations: data.data.educations,
             cache: data.data.educations,
-            status: true,
         }),
         [READ_EDUCATION_FAILURE]: (state, action) => ({
             ...state,
             error: action.payload.message,
-            status: false,
         }),
         [CREATE_EDUCATION_SUCCESS]: (state, { payload: data }) => ({
             ...state,

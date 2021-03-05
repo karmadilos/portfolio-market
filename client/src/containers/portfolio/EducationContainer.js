@@ -17,7 +17,7 @@ function EducationContainer() {
     const uid = useLocation().pathname.split('/').at(-1);
     const dispatch = useDispatch();
     // eslint-disable-next-line no-unused-vars
-    const { mode, educations, error, cache, status } = useSelector(
+    const { mode, educations, error, cache, currentPage } = useSelector(
         ({ education }) => ({
             mode: education.mode,
             educations: education.educations,
@@ -39,10 +39,10 @@ function EducationContainer() {
         } else {
             dispatch(changeMode(0));
         }
-        if (!status) {
+        if (!currentPage || uid != currentPage) {
             dispatch(readAllEducations({ uid }));
         }
-    }, [status]);
+    }, [currentPage, status]);
     return (
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
             <h4>학력</h4>
