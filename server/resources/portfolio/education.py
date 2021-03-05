@@ -5,10 +5,11 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 from database.models.education import Education
 from database.db import db
-from resources.auth.auth import jwt
+from flask_jwt_extended import JWTManager
 import datetime
 import maya
 
+jwt = JWTManager()
 keys = [
     "id",
     "user_id",
@@ -42,12 +43,13 @@ class EducationApi(Resource):
             educations=result,
         )
 
+    @jwt_required()
     def post(self, user_id):
-        # print(get_jwt_identity())
-        # if get_jwt_identity() != int(user_id):
-        #     abort(401, status="fail", message="접근 권한이 없습니다.")
+        if get_jwt_identity() != int(user_id):
+            abort(401, status="fail", message="접근 권한이 없습니다.")
         # school_name, major, status = dict(request.get_json(force=True)).values()
-        print(request.cookies.get("csrf-access-token"))
+        # print(request.header.get("csrf-access-token"))
+        print(request.cookies, request.headers)
         education = Education(user_id)
         db.session.add(education)
         db.session.commit()
@@ -72,7 +74,6 @@ class EducationApi(Resource):
             result={"id": list(map(lambda x: x["id"], data))},
         )
 
-    # @jwt_required
     def delete(self, user_id, id):
         # if get_jwt_identity() != int(user_id):
         #     abort(401, status="fail", message="접근 권한이 없습니다.")

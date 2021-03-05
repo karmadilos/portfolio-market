@@ -11,7 +11,8 @@ keys = [
     "title",
     "desc",
     "start_date",
-    "end_date" "create_date",
+    "end_date",
+    "create_date",
     "updated_date",
 ]
 # 토큰 방식으로 구현 후, post/put/delete 작업은

@@ -42,13 +42,13 @@ def create_app():
     CORS(app, supports_credentials=True, origins=os.getenv("ORIGIN"))
     # app object에 config 적용
     app.config.from_object(config)
-    # api 설정 및 적용
-    api = Api(app)
-    set_api_resources(api)
     # jwt 적용을 위한 JMTManager 적용
     jwt.init_app(app)
     # auth 객체 blueprint 등록
     app.register_blueprint(auth, url_prefix="/auth")
+    # api 설정 및 적용
+    api = Api(app)
+    set_api_resources(api)
     # db 적용 및 migrate
     db.init_app(app)
     db.create_all(app=app)

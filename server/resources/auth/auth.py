@@ -82,6 +82,10 @@ def logout():
 @auth.route("/user", methods=["POST"])
 @jwt_required()
 def get_user():
+    from flask_jwt_extended.config import config
+
+    print(config.access_cookie_name, config.header_name)
+    print(request.cookies, request.headers)
     identity = get_jwt_identity()
     print(identity)
     if not identity:
