@@ -1,5 +1,9 @@
-import { request } from './client';
+/* eslint-disable no-undef */
+import { request, requestWithJWT } from './client';
+import dotenv from 'dotenv';
 
+dotenv.config();
+console.log(process.env.REACT_APP_HOST);
 //method, url, data
 
 /*
@@ -7,59 +11,85 @@ import { request } from './client';
 학력 정보 CRUD API
 ****************
 */
-export const getAllEdu = (user_id) => request('get', `/education/${user_id}`);
+export const getAllEdu = ({ uid }) =>
+    request('get', process.env.REACT_APP_HOST + `/education/${uid}`);
 
-export const postEdu = (user_id) => request('post', `/education/${user_id}`);
+export const postEdu = ({ uid }) =>
+    requestWithJWT('post', process.env.REACT_APP_HOST + `/education/${uid}`);
 
-export const putEdu = (user_id, data) =>
-    request('put', `/education/${user_id}`, data);
+export const putEdu = ({ uid, data }) =>
+    requestWithJWT(
+        'put',
+        process.env.REACT_APP_HOST + `/education/${uid}`,
+        data,
+    );
 
-export const deleteEdu = (user_id, id) =>
-    request('delete', `/education/${user_id}/${id}`);
+export const deleteEdu = ({ uid, id }) =>
+    requestWithJWT(
+        'delete',
+        process.env.REACT_APP_HOST + `/education/${uid}/${id}`,
+    );
 
 /*
 ****************
 수상 정보 CRUD API
 ****************
 */
-export const getAwards = (user_id) => request('get', `/awards/${user_id}`);
+export const getAllAwd = ({ uid }) =>
+    request('get', process.env.REACT_APP_HOST + `/awards/${uid}`);
 
-export const postAwards = (user_id) => request('post', `/awards/${user_id}`);
+export const postAwd = ({ uid }) =>
+    requestWithJWT('post', process.env.REACT_APP_HOST + `/awards/${uid}`);
 
-export const putAwards = (user_id, data) =>
-    request('put', `/awards/${user_id}`, data);
+export const putAwd = ({ uid, data }) =>
+    requestWithJWT('put', process.env.REACT_APP_HOST + `/awards/${uid}`, data);
 
-export const deleteAwards = (user_id, id) =>
-    request('delete', `/awards/${user_id}/${id}`);
+export const deleteAwd = ({ uid, id }) =>
+    requestWithJWT(
+        'delete',
+        process.env.REACT_APP_HOST + `/awards/${uid}/${id}`,
+    );
 
 /*
 *******************
 프로젝트 정보 CRUD API
 *******************
 */
-export const getProjects = (user_id) => request('get', `/project/${user_id}`);
+export const getAllPj = ({ uid }) =>
+    request('get', process.env.REACT_APP_HOST + `/project/${uid}`);
 
-export const postProjects = (user_id) => request('post', `/project/${user_id}`);
+export const postPj = ({ uid }) =>
+    requestWithJWT('post', process.env.REACT_APP_HOST + `/project/${uid}`);
 
-export const putProject = (user_id, data) =>
-    request('put', `/project/${user_id}`, data);
+export const putPj = ({ uid, data }) =>
+    requestWithJWT('put', process.env.REACT_APP_HOST + `/project/${uid}`, data);
 
-export const deleteProject = (user_id, id) =>
-    request('delete', `/project/${user_id}/${id}`);
+export const deletePj = ({ uid, id }) =>
+    requestWithJWT(
+        'delete',
+        process.env.REACT_APP_HOST + `/project/${uid}/${id}`,
+    );
 
 /*
 ******************
 자격증 정보 CRUD API
 ******************
 */
-export const getCertificate = (user_id) =>
-    request('get', `/certificate/${user_id}`);
+export const getAllCert = ({ uid }) =>
+    request('get', process.env.REACT_APP_HOST + `/certificate/${uid}`);
 
-export const postCertificate = (user_id) =>
-    request('post', `/certificate/${user_id}`);
+export const postCert = ({ uid }) =>
+    requestWithJWT('post', process.env.REACT_APP_HOST + `/certificate/${uid}`);
 
-export const putCertificate = (user_id, data) =>
-    request('put', `/certificate/${user_id}`, data);
+export const putCert = ({ uid, data }) =>
+    requestWithJWT(
+        'put',
+        process.env.REACT_APP_HOST + `/certificate/${uid}`,
+        data,
+    );
 
-export const deleteCertificate = (user_id, id) =>
-    request('delete', `/certificate/${user_id}/${id}`);
+export const deleteCert = ({ uid, id }) =>
+    requestWithJWT(
+        'delete',
+        process.env.REACT_APP_HOST + `/certificate/${uid}/${id}`,
+    );

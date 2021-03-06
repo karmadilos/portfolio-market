@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { CardColumns } from 'react-bootstrap';
 import { getAllProfile } from '../../lib/apis/profile';
+import AlertBlock from '../../components/network/AlertBlock';
 import Profile from '../../components/network/Profile';
 import SearchBar from '../../components/network/SearchBar';
 import SearchError from '../../components/network/SearchError';
@@ -11,6 +12,7 @@ function ProfileContainer({ history }) {
     const [profiles, setProfiles] = useState([]);
     const [search, setSearch] = useState('');
     const [error, setError] = useState(null);
+    const [errMsg, setErrMsg] = useState(null);
     const onSubmit = (e) => {
         e.preventDefault();
         console.log(e.target[0].value);
@@ -24,6 +26,7 @@ function ProfileContainer({ history }) {
     };
     useEffect(() => {
         setError(null);
+        setErrMsg(null);
         if (profiles.length === 0 && !search) {
             getAllProfile()
                 .then((res) => {
@@ -73,50 +76,57 @@ function ProfileContainer({ history }) {
                 });
         }
         if (search) {
-            getAllProfile(search)
-                .then((res) => {
-                    console.log(res.data.data);
-                    if (res.data.data.length > 0) {
-                        const payload = res.data.data.map((v) => (
-                            <Profile
-                                key={v.user_id}
-                                id={v.user_id}
-                                mode={0}
-                                imgurl={v.img_url}
-                                name={v.user_name}
-                                comment={v.comment}
-                                goto={goto}
-                            />
-                        ));
-                        let tmp = [],
-                            data = [];
-                        for (let i in payload) {
-                            tmp = [...tmp, payload[i]];
-                            if ((i + 1) % 3 === 0) {
+            console.log(search, search.length);
+            if (search.length < 2) {
+                setErrMsg('두 글자 이상 입력하셔야 합니다.');
+            } else {
+                getAllProfile(search)
+                    .then((res) => {
+                        console.log(res.data.data);
+                        if (res.data.data.length > 0) {
+                            const payload = res.data.data.map((v) => (
+                                <Profile
+                                    key={v.user_id}
+                                    id={v.user_id}
+                                    mode={0}
+                                    imgurl={v.img_url}
+                                    name={v.user_name}
+                                    comment={v.comment}
+                                    goto={goto}
+                                />
+                            ));
+                            let tmp = [],
+                                data = [];
+                            for (let i in payload) {
+                                tmp = [...tmp, payload[i]];
+                                if ((i + 1) % 3 === 0) {
+                                    data = [
+                                        ...data,
+                                        <CardColumns key={i}>
+                                            {tmp}
+                                        </CardColumns>,
+                                    ];
+                                    tmp = [];
+                                }
+                            }
+                            if (tmp.length !== 0)
                                 data = [
                                     ...data,
-                                    <CardColumns key={i}>{tmp}</CardColumns>,
+                                    <CardColumns key={payload.length}>
+                                        {tmp}
+                                    </CardColumns>,
                                 ];
-                                tmp = [];
-                            }
+                            setProfiles(data);
+                        } else {
+                            setError(true);
+                            setProfiles([]);
                         }
-                        if (tmp.length !== 0)
-                            data = [
-                                ...data,
-                                <CardColumns key={payload.length}>
-                                    {tmp}
-                                </CardColumns>,
-                            ];
-                        setProfiles(data);
-                    } else {
+                    })
+                    .catch((err) => {
                         setError(true);
-                        setProfiles([]);
-                    }
-                })
-                .catch((err) => {
-                    setError(true);
-                    console.log(err);
-                });
+                        console.log(err);
+                    });
+            }
         }
     }, [search]);
     return (
@@ -125,6 +135,11 @@ function ProfileContainer({ history }) {
                 <SearchBar onSubmit={onSubmit} />
             </div>
             <div>{profiles}</div>
+            <AlertBlock
+                message={errMsg}
+                setErrMsg={setErrMsg}
+                setSearch={setSearch}
+            />
             {error && <SearchError />}
         </>
     );

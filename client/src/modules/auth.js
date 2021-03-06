@@ -40,7 +40,7 @@ export const register = asyncUtils.createPromiseThunk(
 );
 export const login = ({ email, password }) => async (dispatch) => {
     // 요청 시작
-    dispatch({ type: LOGIN });
+    dispatch({ type: LOGIN, email, password });
     try {
         // 결과물의 이름을 payload 라는 이름으로 통일시킵니다.
         const payload = await authAPI.login({ email, password });
@@ -57,6 +57,7 @@ export const login = ({ email, password }) => async (dispatch) => {
         }); // 실패
     }
 };
+
 export const logout = () => async (dispatch) => {
     dispatch({ type: LOGOUT });
     try {

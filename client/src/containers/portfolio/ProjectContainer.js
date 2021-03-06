@@ -1,110 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import * as API from '../../lib/apis/portfolio';
 import Project from '../../components/portfolio/Project';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faPen } from '@fortawesome/free-solid-svg-icons';
+import {
+    changeMode,
+    createProject,
+    readAllProject,
+    updateProject,
+} from '../../modules/project';
 
 function ProjectContainer() {
-    const location = useLocation().pathname.split('/');
-    const [mode, setMode] = useState(0);
-    const [pjTuples, setPjTuples] = useState([]);
-    const [pj, setPj] = useState([]);
-    const [status, setStatus] = useState(false);
-
-    const onClick = () => setMode(2);
-    const addEdu = () => {
-        API.postEdu(location[location.length - 1]).then((res) => {
-            console.log(res.data);
-            const payload = {
-                id: res.data.result.id,
-                school: '',
-                major: '',
-                status: 'attending',
-            };
-            setPjTuples([...pjTuples, payload]);
-            setPj([
-                ...pj,
-                <Project
-                    mode={0}
-                    key={payload.id}
-                    school={payload.school}
-                    major={payload.major}
-                    status={payload.status}
-                />,
-            ]);
-        });
+    const uid = useLocation().pathname.split('/').at(-1);
+    // eslint-disable-next-line no-unused-vars
+    const { mode, projects, cache, error, currentPage } = useSelector(
+        ({ project }) => ({
+            mode: project.mode,
+            status: project.status,
+            projects: project.projects,
+            cache: project.cache,
+            error: project.error,
+        }),
+    );
+    const dispatch = useDispatch();
+    const setMode = () => dispatch(changeMode(2));
+    const addPj = () => dispatch(createProject({ uid }));
+    const updatePj = () => {
+        dispatch(updateProject({ uid, data: cache }));
+        dispatch(changeMode(1));
     };
-    // const onSubmit = (e) => {
-    //     e.prventDefault();
-    //     console.log(e.target);
-    // };
     useEffect(() => {
-        if (location[location.length - 1] === sessionStorage.getItem('id')) {
-            setMode(1);
+        console.log(uid, sessionStorage.getItem('id'));
+        if (uid === sessionStorage.getItem('id')) {
+            dispatch(changeMode(1));
         } else {
-            setMode(0);
+            dispatch(changeMode(0));
         }
-        if (!status) {
-            API.getAllEdu(location[location.length - 1]).then((res) => {
-                console.log(res.data.data);
-                const payload = res.data.data;
-                setPjTuples(
-                    payload.map((v) => ({
-                        id: v.id,
-                        school: v.school_name,
-                        major: v.major,
-                        status: v.status,
-                    })),
-                );
-                if (payload.length === 1) {
-                    // 등록된 데이터가 기본값밖에 없으면 출력
-                    if (!payload[0].school_name && !payload[0].major)
-                        setPj([
-                            <Project
-                                mode={0}
-                                key={0}
-                                school="학력 정보가 없습니다"
-                                major="전공 정보"
-                                status=""
-                            />,
-                        ]);
-                } else {
-                    setPj(
-                        payload.map((v) => (
-                            <Project
-                                mProject
-                                key={v.id}
-                                school={v.school_name}
-                                major={v.major}
-                                status={v.status}
-                                eduTuples={pjTuples}
-                                addEdu={addEdu}
-                            />
-                        )),
-                    );
-                }
-                setStatus(true);
-            });
+        if (!currentPage || uid != currentPage) {
+            dispatch(readAllProject({ uid }));
         }
-    }, [status]);
+    }, [currentPage]);
     return (
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
             <h4>프로젝트</h4>
-            <Project mode={mode} />
-            {/* {pj} */}
+            {projects.map((pj) => (
+                <Project
+                    key={pj.id}
+                    uid={uid}
+                    pid={pj.id}
+                    mode={mode}
+                    title={pj.title}
+                    desc={pj.desc}
+                    start={pj.start_date}
+                    end={pj.end_date}
+                />
+            ))}
             {mode === 1 ? (
-                <Button variant="primary">
-                    <FontAwesomeIcon icon={faPen} onClick={onClick} />
+                <Button variant="primary" onClick={setMode}>
+                    <FontAwesomeIcon icon={faPen} />
                 </Button>
             ) : null}
             {mode === 2 ? (
                 <>
-                    <Button variant="primary" onClick={addEdu}>
+                    {/* post */}
+                    <Button variant="primary" onClick={addPj}>
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>
-                    <Button variant="success">
+                    {/* put */}
+                    <Button variant="success" onClick={updatePj}>
                         <FontAwesomeIcon icon={faCheck} />
                     </Button>
                 </>
