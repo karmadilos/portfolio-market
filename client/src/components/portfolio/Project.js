@@ -97,6 +97,7 @@ function Project({ uid, pid, mode, title, desc, start, end }) {
                                     closeOnScroll={true}
                                     selected={startDate}
                                     onChange={changeStartDate}
+                                    dateFormat="yyyy-dd-mm"
                                 />
                             </Col>
                             {/* </div>
@@ -109,6 +110,7 @@ function Project({ uid, pid, mode, title, desc, start, end }) {
                                     closeOnScroll={true}
                                     selected={endDate}
                                     onChange={changeEndDate}
+                                    dateFormat="yyyy-dd-mm"
                                 />
                             </Col>
                         </Row>

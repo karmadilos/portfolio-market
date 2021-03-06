@@ -45,7 +45,13 @@ function NavBar({ history }) {
         } else if (!user.id || !user.fullname) {
             resetUser();
         }
-    }, [user]);
+        if (
+            sessionStorage.getItem('id') != user.id ||
+            sessionStorage.getItem('fullname') != user.fullname
+        ) {
+            resetUser();
+        }
+    }, []);
     return (
         <>
             {error && <Alert variant="fail">{error}</Alert>}

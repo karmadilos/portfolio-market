@@ -6,17 +6,24 @@ import CertificateContainer from '../containers/portfolio/CertificateContainer';
 import EducationContainer from '../containers/portfolio/EducationContainer';
 import ProfileContainer from '../containers/portfolio/ProfileContainer';
 import ProjectContainer from '../containers/portfolio/ProjectContainer';
+import { Col, Row } from 'react-bootstrap';
 
 function Portfolio() {
     return (
         <PageTemplate>
             <>
                 <NavBar />
-                <ProfileContainer />
-                <EducationContainer />
-                <AwardsContainer />
-                <ProjectContainer />
-                <CertificateContainer />
+                <Row>
+                    <Col>
+                        <ProfileContainer />
+                    </Col>
+                    <Col md={8}>
+                        <EducationContainer />
+                        <AwardsContainer />
+                        <ProjectContainer />
+                        <CertificateContainer />
+                    </Col>
+                </Row>
             </>
         </PageTemplate>
     );

@@ -42,7 +42,7 @@ function EducationContainer() {
         if (!currentPage || uid != currentPage) {
             dispatch(readAllEducations({ uid }));
         }
-    }, [currentPage, status]);
+    }, [currentPage]);
     return (
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
             <h4>학력</h4>

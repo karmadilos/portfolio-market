@@ -21,6 +21,8 @@ const GET_USER = 'auth/GET_USER';
 const GET_USER_SUCCESS = 'auth/GET_USER_SUCCESS';
 const GET_USER_FAILURE = 'auth/GET_USER_FAILURE';
 
+const SET_USER = 'auth/SET_USER';
+
 const FORM_ERROR = 'auth/FORM_ERROR';
 
 export const changeInputs = createAction(
@@ -38,6 +40,7 @@ export const register = asyncUtils.createPromiseThunk(
     REGISTER,
     authAPI.register,
 );
+
 export const login = ({ email, password }) => async (dispatch) => {
     // 요청 시작
     dispatch({ type: LOGIN, email, password });
@@ -66,13 +69,31 @@ export const logout = () => async (dispatch) => {
         window.location.reload();
         dispatch({ type: LOGOUT_FINISHED, payload }); // 성공
     } catch (e) {
-        console.log(e.response.data);
+        console.log(e.response);
     }
 };
 
-export const getUser = createAction(GET_USER, () => authAPI.getUser());
-export const setUser = createAction(GET_USER_SUCCESS);
-export const getUserFail = createAction(GET_USER_FAILURE);
+export const getUser = () => async (dispatch) => {
+    dispatch({ type: GET_USER });
+    try {
+        const payload = await authAPI.getUser();
+        console.log(payload);
+        sessionStorage.setItem('id', payload.data.user.id);
+        sessionStorage.setItem('fullname', payload.data.user.fullname);
+        dispatch(
+            setUser({
+                id: payload.data.user.id,
+                fullname: payload.data.user.fullname,
+            }),
+        );
+    } catch (e) {
+        console.log(e.response);
+        //sessionStorage.clear();
+        //dispatch(logout());
+    }
+};
+
+export const setUser = createAction(SET_USER, (user) => user);
 
 export const formError = createAction(FORM_ERROR, (err) => err);
 
@@ -151,6 +172,10 @@ const auth = handleActions(
             auth: asyncUtils.reducerUtils.error(action.payload),
             user: null,
             authError: action.payload.msg,
+        }),
+        [SET_USER]: (state, { payload: user }) => ({
+            ...state,
+            user: user,
         }),
         [FORM_ERROR]: (state, { payload: err }) => ({
             ...state,

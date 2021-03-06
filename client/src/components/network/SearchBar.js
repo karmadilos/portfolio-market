@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import PropType from 'prop-types';
 
-function SearchBar({ onSubmit }) {
+function SearchBar({ search, onChange, onSubmit }) {
     return (
         <Form
             style={{ marginTop: '30px', marginBottom: '70px', padding: '0px' }}
@@ -17,6 +17,8 @@ function SearchBar({ onSubmit }) {
                         type="text"
                         placeholder="이름으로 검색"
                         name="search"
+                        value={search}
+                        onChange={onChange}
                     />
                     {/* <Form.Text className="text-muted">
                     </Form.Text> */}
@@ -32,6 +34,8 @@ function SearchBar({ onSubmit }) {
 }
 
 SearchBar.propTypes = {
+    search: PropType.string,
+    onChange: PropType.func,
     onSubmit: PropType.func,
 };
 export default SearchBar;
