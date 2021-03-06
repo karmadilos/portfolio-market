@@ -17,7 +17,7 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                     <h2>{text}</h2>
                     <Form onSubmit={onSubmit}>
                         <Form.Group controlId="formBasicEmail">
-                            <Form.Label>Email address</Form.Label>
+                            <Form.Label>이메일</Form.Label>
                             <Form.Control
                                 type="email"
                                 placeholder="Enter email"
@@ -25,22 +25,32 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                                 value={form.email}
                                 onChange={onChange}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Please choose a username.
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group controlId="formBasicPassword">
-                            <Form.Label>Password</Form.Label>
+                            <Form.Label>비밀번호</Form.Label>
                             <Form.Control
                                 type="password"
                                 placeholder="Password"
                                 name="password"
                                 value={form.password}
                                 onChange={onChange}
+                                style={{ border: '1px solid #dc3545' }}
                             />
+                            <Form.Control.Feedback
+                                type="invalid"
+                                style={{ display: 'block' }}
+                            >
+                                Please choose a username.
+                            </Form.Control.Feedback>
                         </Form.Group>
                         {type === 'register' && (
                             <>
                                 <Form.Group controlId="formBasicPassword">
-                                    <Form.Label>Password Check</Form.Label>
+                                    <Form.Label>비밀번호 확인</Form.Label>
                                     <Form.Control
                                         type="password"
                                         placeholder="Password Check"
@@ -50,7 +60,7 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                                     />
                                 </Form.Group>
                                 <Form.Group controlId="formBasicPassword">
-                                    <Form.Label>Fullname</Form.Label>
+                                    <Form.Label>이름</Form.Label>
                                     <Form.Control
                                         placeholder="Fullname"
                                         name="fullname"

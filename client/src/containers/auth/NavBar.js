@@ -2,15 +2,19 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { logout } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getCookie } from '../../lib/apis/client';
 import { getUser } from '../../lib/apis/auth';
-import { Nav, Navbar, Alert } from 'react-bootstrap';
+import { Nav, Navbar, Alert, Form } from 'react-bootstrap';
 
 function NavBar({ history }) {
     const [user, setUser] = useState({ id: '', fullname: '' });
     // const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
+    const { profile } = useSelector(({ profile }) => ({
+        profile: profile.profile,
+    }));
+
     const dispatch = useDispatch();
     const onClick = (e) => {
         e.preventDefault();
@@ -46,12 +50,13 @@ function NavBar({ history }) {
             resetUser();
         }
         if (
-            sessionStorage.getItem('id') != user.id ||
-            sessionStorage.getItem('fullname') != user.fullname
+            profile.user_name &&
+            profile.user_name !== user.fullname &&
+            profile.id.toString() === user.id
         ) {
             resetUser();
         }
-    }, []);
+    }, [user, profile.user_name]);
     return (
         <>
             {error && <Alert variant="fail">{error}</Alert>}
@@ -67,7 +72,12 @@ function NavBar({ history }) {
                     <b>Racer Portfolio</b>
                 </Navbar.Brand>
                 <Nav>
-                    <Nav.Link href="/network">Network</Nav.Link>
+                    <Form.Check
+                        type="switch"
+                        id="custom-switch"
+                        label="Check this switch"
+                    />
+                    {/* <Nav.Link href="/network">Network</Nav.Link> */}
                 </Nav>
                 <Navbar.Collapse className="justify-content-end">
                     <Nav>

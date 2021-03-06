@@ -13,6 +13,7 @@ function Profile({
     comment,
     changeMode,
     updatePro,
+    updateImg,
     pf,
     onChange,
 }) {
@@ -38,7 +39,7 @@ function Profile({
 
     const imgComponent = (
         <Card.Img
-            src={imgUrl && default_img_url}
+            src={imgUrl || default_img_url}
             alt="Card image"
             style={{ borderRadius: '50%' }}
         />
@@ -53,12 +54,6 @@ function Profile({
         textAlign: 'center',
     };
 
-    const updateImg = (e) => {
-        if (!e.target.files) {
-            const req = new FormData();
-            req.append('file', e.target.files[0]);
-        }
-    };
     return (
         <Card
             style={
@@ -147,6 +142,7 @@ Profile.propTypes = {
     comment: PropTypes.string,
     changeMode: PropTypes.func,
     updatePro: PropTypes.func,
+    updateImg: PropTypes.func,
     pf: PropTypes.object,
     onChange: PropTypes.func,
 };

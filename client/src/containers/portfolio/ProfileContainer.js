@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Profile from '../../components/network/Profile';
 import { useLocation } from 'react-router-dom';
 import { readProfile, changeMode, updateProfile } from '../../modules/profile';
-import { setUser } from '../../modules/auth';
+// import { getUser } from '../../modules/auth';
 
 function ProfileContainer() {
     // 프로필 정보 가져오기
@@ -35,7 +35,14 @@ function ProfileContainer() {
         dispatch(updateProfile(data));
         dispatch(changeMode(2));
         setPf({ user_name: profile.user_name, comment: profile.comment });
-        dispatch(setUser());
+    };
+
+    const updateImg = (e) => {
+        if (e.target.files) {
+            const req = new FormData();
+            req.append('file', e.target.files[0]);
+            dispatch(updateProfile({ uid, data: req }));
+        }
     };
 
     useEffect(() => {
@@ -58,6 +65,7 @@ function ProfileContainer() {
                     comment={profile.comment}
                     changeMode={setMode}
                     updatePro={updatePro}
+                    updateImg={updateImg}
                     pf={pf}
                     onChange={onChange}
                 />
