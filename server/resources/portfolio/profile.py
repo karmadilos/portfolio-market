@@ -75,42 +75,55 @@ class ProfileApi(Resource):
         except:
             try:
                 profile_img = request.files["file"]
+                print("profile 사진 파일 변수 받음", type(profile_img))
                 fname = secure_filename(profile_img.filename)
-                os.makedirs(f"/static/images/{user_id}", exists_ok=True)
-                url = db.session.query(Profile).filter_by(user_id=user_id)
-                os.remove(f"/static/images/{url.split('/')[-1]}")
-                profile_img.save(os.path.join("/static/images", fname))
+                print(f"파일 암호화 {fname}")
+                profile = db.session.query(Profile).filter_by(user_id=user_id).first()
+                db.session.commit()
+                print(f"해당 id에 현재 img url값 질의하기 {profile.img_url}")
+                url = profile.img_url.split("/")[-1]
+                print(f"static/{url.split('/')[-1]}")
+
+                if os.path.isfile(f"static/{user_id}/{url.split('/')[-1]}"):
+                    os.remove(f"static/{user_id}/{url.split('/')[-1]}")
+                print("해당 유저 폴더에 이미 사진이 있으면 삭제")
+
+                os.makedirs(f"static/{user_id}", exist_ok=True)
+                print("디렉토리 생성")
+
+                profile_img.save(os.path.join(f"static/{user_id}", fname))
+                print("디렉토리에 현재 파일 저장")
                 db.session.query(Profile).filter_by(user_id=user_id).update(
-                    img_url=f"{IMAGE_URL_PATH}/{user_id}/{fname}"
+                    {"img_url": f"{IMAGE_URL_PATH}/{user_id}/{fname}"}
                 )
+                print("db에 변동사항 저장")
                 db.session.commit()
                 return jsonify(
                     status="success",
                     result={"img_url": f"{IMAGE_URL_PATH}/{user_id}/{fname}"},
                 )
             except:
-                pass
-        return make_response(jsonify(message="잘못된 요청입니다."), 400)
+                return make_response(jsonify(message="잘못된 요청입니다."), 400)
 
-    # 프로필 정보는 삭제하지 않는다.
-    # def delete(self, user_id):
-    #     if not user_id:
-    #         abort(401, status="fail", msg="접근 권한이 없습니다.")
-    #     if not id:
-    #         abort(400, status="fail", msg="삭제할 데이터가 없습니다.")
+    # 프로필 정보는 삭제하지 않기 때문에 작성하지 않습니다.
+    def delete(self, user_id):
+        if not user_id:
+            abort(401, status="fail", msg="접근 권한이 없습니다.")
+        if not id:
+            abort(400, status="fail", msg="삭제할 데이터가 없습니다.")
 
-    #     profile = Profile.query.filter_by(user_id=user_id).first()
+        profile = Profile.query.filter_by(user_id=user_id).first()
 
-    #     # 해당 프로필 정보가 존재하지 않으면 response 400
-    #     if not profile:
-    #         abort(400, status="fail", message="잘못된 ID입니다.")
+        # 해당 프로필 정보가 존재하지 않으면 response 400
+        if not profile:
+            abort(400, status="fail", message="잘못된 ID입니다.")
 
-    #     # 삭제할 프로필 정보가 존재하면 삭제 후 response 200
-    #     db.session.delete(profile)
-    #     db.session.commit()
-    #     return jsonify(
-    #         status="success",
-    #         result={
-    #             "_id": user_id,
-    #         },
-    #     )
+        # 삭제할 프로필 정보가 존재하면 삭제 후 response 200
+        db.session.delete(profile)
+        db.session.commit()
+        return jsonify(
+            status="success",
+            result={
+                "_id": user_id,
+            },
+        )
