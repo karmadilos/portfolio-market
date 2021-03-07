@@ -4,6 +4,7 @@ import { Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
+// 검색을 2글자 이상으로 하지 않았을 떄 렌더링 될 모달 창
 function AlertBlock({ message, setErrMsg, setSearch }) {
     if (message) {
         return (

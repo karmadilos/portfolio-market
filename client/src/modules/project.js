@@ -1,3 +1,4 @@
+// 프로젝트 정보 crud 처리를 위한 Redux action, action function, reducer
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
 import * as API from '../lib/apis/portfolio';
@@ -66,6 +67,7 @@ export const setCache = createAction(SET_CACHE, ({ pid, key, value }) => ({
 }));
 export const changeMode = createAction(CHANGE_MODE, (mode) => mode);
 
+// 초기 State
 // [mode] 0(일반 사용자 접근), 1(해당 사용자 접근), 2(해당 사용자 업데이트)
 const initialState = {
     projects: [],
@@ -75,6 +77,7 @@ const initialState = {
     error: null,
 };
 
+// action에 대응해 State를 변경하는 reducer
 const project = handleActions(
     {
         [READ_PROJECT]: (state, action) => ({

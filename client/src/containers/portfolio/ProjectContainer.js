@@ -32,7 +32,8 @@ function ProjectContainer() {
         dispatch(changeMode(1));
     };
     useEffect(() => {
-        console.log(uid, sessionStorage.getItem('id'));
+        // 현재 접속한 포트폴리오 페이지의 userid가 현재 접속한 사용자와 같으면 1,
+        // 다르면 0으로 모드를 전환시킨다.
         if (uid === sessionStorage.getItem('id')) {
             dispatch(changeMode(1));
         } else {
@@ -41,7 +42,7 @@ function ProjectContainer() {
         if (!currentPage || uid != currentPage) {
             dispatch(readAllProject({ uid }));
         }
-    }, [currentPage]);
+    }, [currentPage]); // 사용자 페이지가 바뀔 때마다, 사용자 정보를 호출한다.
     return (
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
             <h4>프로젝트</h4>

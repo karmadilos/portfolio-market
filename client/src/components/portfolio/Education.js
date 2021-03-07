@@ -13,6 +13,8 @@ const map = {
     master: '석사',
     doctor: '박사',
 };
+
+// 학력 정보를 표시하는 컴포넌트
 function Education({ eid, uid, school, major, status }) {
     const { mode } = useSelector(({ education }) => ({
         mode: education.mode,

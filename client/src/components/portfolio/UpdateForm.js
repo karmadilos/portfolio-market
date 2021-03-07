@@ -4,6 +4,7 @@ import { Row, Col, Form } from 'react-bootstrap';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
+// 업데이트 화면에 공통적으로 쌓여질 부모 컴포넌트
 function UpdateForm({ children }) {
     // const aStyle = {
     //     opacity: '0.5',

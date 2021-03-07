@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from flask_restful import reqparse, abort, Api, Resource
-from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 from database.models.education import Education
@@ -58,9 +57,10 @@ class EducationApi(Resource):
             result={key: getattr(education, key) for key in keys},
         )
 
+    @jwt_required()
     def put(self, user_id, id=None):
-        # if get_jwt_identity() != int(user_id):
-        #     abort(401, status="fail", message="접근 권한이 없습니다.")
+        if get_jwt_identity() != int(user_id):
+            abort(401, status="fail", message="접근 권한이 없습니다.")
         # 여러개의 데이터를 동시에 수정한다. (data에 배열로 수정 내용을 입력받음)
         data = request.get_json(force=True)
         print(data)
@@ -74,9 +74,10 @@ class EducationApi(Resource):
             result={"id": list(map(lambda x: x["id"], data))},
         )
 
+    @jwt_required()
     def delete(self, user_id, id):
-        # if get_jwt_identity() != int(user_id):
-        #     abort(401, status="fail", message="접근 권한이 없습니다.")
+        if get_jwt_identity() != int(user_id):
+            abort(401, status="fail", message="접근 권한이 없습니다.")
         if not id:
             abort(400, status="fail", message="삭제할 데이터가 없습니다.")
 

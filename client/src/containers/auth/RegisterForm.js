@@ -10,6 +10,7 @@ import {
 } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
 
+// 회원 가입 정보를 주고받는 Container 컴포넌트
 function RegisterForm({ history }) {
     const dispatch = useDispatch();
     const { form, authError, auth } = useSelector(({ auth }) => ({

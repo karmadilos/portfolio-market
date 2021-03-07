@@ -10,6 +10,7 @@ import {
 } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
 
+// 로그인 정보를 교환하는 container 컴포넌트
 function LoginForm({ history }) {
     const dispatch = useDispatch();
     const { form, auth, user, authError } = useSelector(({ auth }) => ({
@@ -21,6 +22,10 @@ function LoginForm({ history }) {
 
     const onChange = (e) => {
         const { name, value } = e.target;
+        if (!value) {
+            // border color red
+            // message를 각 폼에 전달한다.
+        }
         dispatch(
             changeInputs({
                 type: 'login',

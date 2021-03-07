@@ -2,6 +2,8 @@ from flask import jsonify, request
 from flask_restful import reqparse, abort, Api, Resource
 from database.models.project import Project
 from database.db import db
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
 import datetime
 import maya
 
@@ -39,8 +41,9 @@ class ProjectApi(Resource):
             projects=result,
         )
 
+    @jwt_required()
     def post(self, user_id):
-        if not user_id:
+        if get_jwt_identity() != int(user_id):
             abort(401, status="fail", msg="접근 권한이 없습니다.")
         project = Project(user_id)
         db.session.add(project)
@@ -50,8 +53,9 @@ class ProjectApi(Resource):
             result={key: getattr(project, key) for key in keys},
         )
 
+    @jwt_required()
     def put(self, user_id, id=None):
-        if not user_id:
+        if get_jwt_identity() != int(user_id):
             abort(401, status="fail", msg="접근 권한이 없습니다.")
         # 여러개의 데이터를 동시에 수정한다. (data에 배열로 수정 내용을 입력받음)
         data = request.get_json(force=True)
@@ -68,8 +72,9 @@ class ProjectApi(Resource):
             result={"_id": list(map(lambda x: x["id"], data))},
         )
 
+    @jwt_required()
     def delete(self, user_id, id):
-        if not user_id:
+        if get_jwt_identity() != int(user_id):
             abort(401, status="fail", msg="접근 권한이 없습니다.")
         if not id:
             abort(400, status="fail", msg="삭제할 데이터가 없습니다.")
