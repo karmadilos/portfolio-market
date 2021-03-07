@@ -32,6 +32,7 @@ function ProfileContainer() {
         else dispatch(searchProfile({ search }));
     };
 
+    // 화면이 처음 mount 될 때, 모든 사용자의 프로필 정보 호출
     useEffect(() => {
         dispatch(readAllProfiles());
     }, []);
@@ -47,6 +48,7 @@ function ProfileContainer() {
         />
     ));
 
+    // 규칙적인 grid로 프로필 정보를 표시하기 위한 작업
     let profileBlock = [];
     for (let i = 0; i < profileOutput.length; i += 3) {
         profileBlock = [

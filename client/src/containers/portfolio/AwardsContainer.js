@@ -12,6 +12,7 @@ import {
     updateAwards,
 } from '../../modules/awards';
 
+// 수상 정보를 주고받는 Container 컴포넌트
 function AwardsContainer() {
     const uid = useLocation().pathname.split('/').at(-1);
     // eslint-disable-next-line no-unused-vars
@@ -24,6 +25,8 @@ function AwardsContainer() {
             error: awards.error,
         }),
     );
+
+    // 각각의 하위 컴포넌트에 전달할 이벤트 함수
     const dispatch = useDispatch();
     const setMode = () => dispatch(changeMode(2));
     const addAwd = () => dispatch(createAwards({ uid }));
@@ -33,6 +36,8 @@ function AwardsContainer() {
     };
 
     useEffect(() => {
+        // 현재 접속한 포트폴리오 페이지의 userid가 현재 접속한 사용자와 같으면 1,
+        // 다르면 0으로 모드를 전환시킨다.
         if (uid === sessionStorage.getItem('id')) {
             dispatch(changeMode(1));
         } else {
@@ -41,7 +46,7 @@ function AwardsContainer() {
         if (!currentPage || uid != currentPage) {
             dispatch(readAllAwards({ uid }));
         }
-    }, [currentPage]);
+    }, [currentPage]); // 사용자 페이지가 바뀔 때마다, 사용자 정보를 호출한다.
 
     return (
         <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>

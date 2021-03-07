@@ -7,6 +7,7 @@ import { getCookie } from '../../lib/apis/client';
 import { getUser } from '../../lib/apis/auth';
 import { Nav, Navbar, Alert, Form } from 'react-bootstrap';
 
+// 네이게이션 정보를 나타내는 container 컴포넌트
 function NavBar({ history }) {
     const [user, setUser] = useState({ id: '', fullname: '' });
     // const [user, setUser] = useState(null);

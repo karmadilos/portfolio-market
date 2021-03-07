@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import PropType from 'prop-types';
 
+// 검색 창 컴포넌트
 function SearchBar({ search, onChange, onSubmit }) {
     return (
         <Form

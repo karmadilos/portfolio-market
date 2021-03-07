@@ -1,3 +1,4 @@
+// auth(회원가입, 로그인, 로그아웃)에 대한 Redux action, action function, reducer
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
 import * as authAPI from '../lib/apis/auth';
@@ -88,8 +89,8 @@ export const getUser = () => async (dispatch) => {
         );
     } catch (e) {
         console.log(e.response);
-        //sessionStorage.clear();
-        //dispatch(logout());
+        sessionStorage.clear();
+        dispatch(logout());
     }
 };
 
@@ -97,6 +98,7 @@ export const setUser = createAction(SET_USER, (user) => user);
 
 export const formError = createAction(FORM_ERROR, (err) => err);
 
+// 초기 State
 const initialState = {
     register: {
         email: '',
@@ -113,6 +115,7 @@ const initialState = {
     authError: '',
 };
 
+// 각 액션에 대한, State 변화를 만드는 reducer
 const auth = handleActions(
     {
         [CHANGE_INPUTS]: (state, { payload: { type, key, value } }) =>

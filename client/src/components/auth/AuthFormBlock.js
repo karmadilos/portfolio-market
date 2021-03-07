@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Button, Alert, Container, Row, Col } from 'react-bootstrap';
 // import { Link } from 'react-router-dom';
+// 회원 가입/로그인에 공통적으로 사용되는 컴포넌트
 
 const types = {
     login: '로그인',
@@ -38,7 +39,7 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                                 name="password"
                                 value={form.password}
                                 onChange={onChange}
-                                style={{ border: '1px solid #dc3545' }}
+                                style={{ borderColor: '#dc3545' }}
                             />
                             <Form.Control.Feedback
                                 type="invalid"

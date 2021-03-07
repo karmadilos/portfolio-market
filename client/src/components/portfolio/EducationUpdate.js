@@ -5,6 +5,7 @@ import UpdateForm from './UpdateForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
+// 학력 정보 수정을 누를 때 나타나는 Form 컴포넌트
 function EducationUpdate({ check, edu, onClick, onChange, onDelete }) {
     // 학교이름, 전공, 현재 상태를 입력받는 폼 형태
     // 용도는

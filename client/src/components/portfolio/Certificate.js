@@ -14,6 +14,7 @@ const aStyle = {
     fontSize: '1.3rem',
 };
 
+// 자격증 정보가 표시되는 컴포넌트
 function Certificate({ uid, cid, mode, title, organization, acquisitionDate }) {
     console.log(typeof acquisitionDate);
     const [aqDate, setAqDate] = useState(new Date(acquisitionDate));

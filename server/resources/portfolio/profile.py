@@ -3,6 +3,8 @@ from flask_restful import reqparse, abort, Api, Resource
 from database.models.profile import Profile
 from database.models.user import User
 from database.db import db
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from config import IMAGE_URL_PATH
@@ -51,11 +53,15 @@ class ProfileApi(Resource):
     def post(self, user_id):
         pass
 
+    @jwt_required()
     def put(self, user_id):
+        if get_jwt_identity() != int(user_id):
+            abort(401, status="fail", msg="접근 권한이 없습니다.")
+
         print(request.get_json())
-        # if not user_id:
-        #     abort(401, status="fail", msg="접근 권한이 없습니다.")
         try:
+            # 프로필의 이름, 코멘트 정보를 request에 보낸 경우
+            # 해당 정보를 update 하고 response에 변경 내용을 보내준다.
             user_name, comment = dict(request.get_json(force=True)).values()
             print(user_name, comment)
             db.session.query(Profile).filter_by(user_id=user_id).update(
@@ -73,11 +79,18 @@ class ProfileApi(Resource):
                 result={"user_name": user_name, "comment": comment},
             )
         except:
+            # 만약 이름, 코멘트 정보가 주어지지 않았다면
+            # 이미지 파일이 주어졌는지 확인한다.
             try:
+                # 사진 파일 객체를 받음
                 profile_img = request.files["file"]
                 print("profile 사진 파일 변수 받음", type(profile_img))
+
+                # 사진 파일 경로 암호화
                 fname = secure_filename(profile_img.filename)
                 print(f"파일 암호화 {fname}")
+
+                # 해당 사용자의 프로필 사진이 이미 등록되어 있다면 삭제하고 해당 사진 업로드
                 profile = db.session.query(Profile).filter_by(user_id=user_id).first()
                 db.session.commit()
                 print(f"해당 id에 현재 img url값 질의하기 {profile.img_url}")
@@ -88,9 +101,11 @@ class ProfileApi(Resource):
                     os.remove(f"static/{user_id}/{url.split('/')[-1]}")
                 print("해당 유저 폴더에 이미 사진이 있으면 삭제")
 
+                # 각 유저의 사진을 저장할 디렉토리 생성(이미 있으면 생성하지 않는다.)
                 os.makedirs(f"static/{user_id}", exist_ok=True)
                 print("디렉토리 생성")
 
+                # 만들어진 디렉토리에 현재 파일 저장
                 profile_img.save(os.path.join(f"static/{user_id}", fname))
                 print("디렉토리에 현재 파일 저장")
                 db.session.query(Profile).filter_by(user_id=user_id).update(
@@ -103,6 +118,7 @@ class ProfileApi(Resource):
                     result={"img_url": f"{IMAGE_URL_PATH}/{user_id}/{fname}"},
                 )
             except:
+                # 이미지 파일도 request에 오지 않았다면 잘못된 요청이므로 400으로 에러 response 400
                 return make_response(jsonify(message="잘못된 요청입니다."), 400)
 
     # 프로필 정보는 삭제하지 않기 때문에 작성하지 않습니다.

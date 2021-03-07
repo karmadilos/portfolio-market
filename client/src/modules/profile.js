@@ -1,26 +1,35 @@
+// 프로필 정보 crud 처리를 위한 Redux action, action function, reducer
 import { createAction, handleActions } from 'redux-actions';
 import * as API from '../lib/apis/profile';
 import * as asyncUtils from '../lib/asyncUtils';
 
-const READ_ALL_PROFILES = 'profile/READ_ALL_PROFILES';
-const READ_ALL_PROFILES_SUCCESS = 'profile/READ_ALL_PROFILES_SUCCESS';
-const READ_ALL_PROFILES_FAILURE = 'profile/READ_ALL_PROFILES_FAILURE';
+// get - 모든 프로필 호출
+const [
+    READ_ALL_PROFILES,
+    READ_ALL_PROFILES_SUCCESS,
+    READ_ALL_PROFILES_FAILURE,
+] = asyncUtils.getAction('profile', 'READ_ALL_PROFILES');
 
-const SEARCH_PROFILE = 'profile/SEARCH_PROFILE';
-const SEARCH_PROFILE_SUCCESS = 'profile/SEARCH_PROFILE_SUCCESS';
-const SEARCH_PROFILE_FAILURE = 'profile/SEARCH_PROFILE_FAILURE';
+// get - 검색
+const [
+    SEARCH_PROFILE,
+    SEARCH_PROFILE_SUCCESS,
+    SEARCH_PROFILE_FAILURE,
+] = asyncUtils.getAction('profile', 'SEARCH_PROFILE');
 
-const READ_PROFILE = 'profile/READ_PROFILE';
-const READ_PROFILE_SUCCESS = 'profile/READ_PROFILE_SUCCESS';
-const READ_PROFILE_FAILURE = 'profile/READ_PROFILE_FAILURE';
+// get - 단일 프로필 호출
+const [
+    READ_PROFILE,
+    READ_PROFILE_SUCCESS,
+    READ_PROFILE_FAILURE,
+] = asyncUtils.getAction('profile', 'READ_PROFILE');
 
-const UPDATE_PROFILE = 'profile/UPDATE_PROFILE';
-const UPDATE_PROFILE_SUCCESS = 'profile/UPDATE_PROFILE_SUCCESS';
-const UPDATE_PROFILE_FAILURE = 'profile/UPDATE_PROFILE_FAILURE';
-
-// const UPLOAD_PROFILE_IMAGE = 'profile/UPLOAD_PROFILE_IMAGE';
-// const UPLOAD_PROFILE_IMAGE_SUCCESS = 'profile/UPLOAD_PROFILE_IMAGE_SUCCESS';
-// const UPLOAD_PROFILE_IMAGE_FAILURE = 'profile/UPLOAD_PROFILE_IMAGE_FAILURE';
+// put - 프로필 수정
+const [
+    UPDATE_PROFILE,
+    UPDATE_PROFILE_SUCCESS,
+    UPDATE_PROFILE_FAILURE,
+] = asyncUtils.getAction('profile', 'UPDATE_PROFILE');
 
 // 초기화
 const RESET_PROFILE = 'profile/RESET_PROFILE';
@@ -51,6 +60,7 @@ export const updateProfile = asyncUtils.createPromiseThunk(
 export const resetProfile = createAction(RESET_PROFILE);
 export const changeMode = createAction(CHANGE_MODE, (mode) => mode);
 
+// 초기 State
 // [mode] 0(network), 1, 2, 3(update)
 const initialState = {
     profiles: [],
@@ -69,6 +79,7 @@ const initialState = {
     error: null,
 };
 
+// action에 의해 State를 변경하는 reducer
 const profile = handleActions(
     {
         [READ_ALL_PROFILES_SUCCESS]: (state, { payload: data }) => ({

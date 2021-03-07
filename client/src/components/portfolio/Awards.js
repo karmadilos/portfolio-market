@@ -7,6 +7,7 @@ import UpdateForm from './UpdateForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
+// 수상 정보가 출력되는 컴포넌트
 function Awards({ uid, aid, mode, awardTitle, awardDesc }) {
     const aStyle = {
         opacity: '0.5',

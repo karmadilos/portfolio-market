@@ -1,3 +1,4 @@
+// 자격증 정보 crud 처리를 위한 Redux action, action function, reducer
 import { createAction, handleActions } from 'redux-actions';
 import produce from 'immer';
 import * as API from '../lib/apis/portfolio';
@@ -66,6 +67,7 @@ export const setCache = createAction(SET_CACHE, ({ cid, key, value }) => ({
 }));
 export const changeMode = createAction(CHANGE_MODE, (mode) => mode);
 
+// 초기 State
 // [mode] 0(일반 사용자 접근), 1(해당 사용자 접근), 2(해당 사용자 업데이트)
 const initialState = {
     certificates: [],
@@ -75,6 +77,7 @@ const initialState = {
     error: null,
 };
 
+// 각 action에 대한 State 변경 reducer
 const certificate = handleActions(
     {
         [READ_CERTIFICATE]: (state, action) => ({

@@ -14,6 +14,7 @@ const aStyle = {
     fontSize: '1.3rem',
 };
 
+// 프로젝트 정보를 표시하는 컴포넌트
 function Project({ uid, pid, mode, title, desc, start, end }) {
     const [startDate, setStartDate] = useState(new Date(start));
     const [endDate, setEndDate] = useState(new Date(end));

@@ -19,7 +19,7 @@ const store = createStore(
 /**
  *
  * @param {*index} n
- * Polyfill
+ * Polyfill for Array Method Array.at(index)
  */
 function at(n) {
     // ToInteger() abstract op

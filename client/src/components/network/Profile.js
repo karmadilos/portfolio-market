@@ -4,6 +4,7 @@ import { Card, Button, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faCheck, faCamera } from '@fortawesome/free-solid-svg-icons';
 
+// 프로필 컴포넌트
 // mode: view(network 전용, 0), read(portfolio 페이지 전용 - 사용자(1, 2)), update(portfolio 페이지 수정 전용,3)
 function Profile({
     uid,
