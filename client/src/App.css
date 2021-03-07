@@ -1,38 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Ubuntu:wght@300&display=swap');
+
+* {
+    font-family: 'Do Hyeon', 'Ubuntu', sans-serif;
+}
+/* .row .card-header {
+    background-color: #282c34;
+    border-color: #282c34;
+}
+
+.collapse {
+
+}
+div {
+    background-color: #282c34;
+    margin: 0px;
+    color: white;
+}
+
+.navbar {
+    background-color: #534fa1;
+}
+
+.card {
+    border: 2px solid #534fa1;
+    background-color: #282c34;
+} */
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.input-file-button {
+    cursor: pointer;
+    display: 'block';
+    width: '270px';
+    height: 'auto';
+    text-align: 'center';
+}
+
+.input-file-button:hover {
+    opacity: 0.8;
+    border: 5px solid #534fa1;
+    border-radius: 50%;
+}
+
+.btn {
+    background-color: #534fa1;
+    border-color: #534fa1;
+    margin: 3px;
+}
+
+.btn:hover {
+    background-color: #534fff;
+    border-color: #534fff;
+}
+
+.plus-btn {
+    border: 3px solid #534fa1;
+    color: #534fa1;
+    background-color: #ffffff;
+    margin: 3px;
+}
+
+.plus-btn:hover {
+    background-color: #534fa1;
+    border: 3px solid #534fa1;
+    color: #ffffff;
+}
+
+.icon:hover {
+    cursor: pointer;
+    color: #534fa1;
+    opacity: 1;
+}
+
+.title {
+    padding: 10px;
 }

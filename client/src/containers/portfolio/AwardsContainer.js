@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Awards from '../../components/portfolio/Awards';
@@ -9,6 +9,7 @@ import {
     changeMode,
     createAwards,
     readAllAwards,
+    setError,
     updateAwards,
 } from '../../modules/awards';
 
@@ -31,6 +32,14 @@ function AwardsContainer() {
     const setMode = () => dispatch(changeMode(2));
     const addAwd = () => dispatch(createAwards({ uid }));
     const updateAwd = () => {
+        for (let awd of cache) {
+            for (let v of Object.values(awd)) {
+                if (!v) {
+                    dispatch(setError('빈 값이 올 수 없습니다'));
+                    return;
+                }
+            }
+        }
         dispatch(updateAwards({ uid, data: cache }));
         dispatch(changeMode(1));
     };
@@ -49,32 +58,43 @@ function AwardsContainer() {
     }, [currentPage]); // 사용자 페이지가 바뀔 때마다, 사용자 정보를 호출한다.
 
     return (
-        <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
-            <h4>수상내역</h4>
-            {awards.map((awd) => (
-                <Awards
-                    key={awd.id}
-                    uid={uid}
-                    aid={awd.id}
-                    mode={mode}
-                    awardTitle={awd.award_title}
-                    awardDesc={awd.award_desc}
-                />
-            ))}
+        <div
+            style={{
+                border: '1px solid rgba(0,0,0,.125)',
+                margin: '10px 0px',
+                textAlign: 'center',
+            }}
+        >
+            <h4 className="title">수상내역</h4>
+            {awards.length > 0
+                ? awards.map((awd) => (
+                      <Awards
+                          key={awd.id}
+                          uid={uid}
+                          aid={awd.id}
+                          mode={mode}
+                          awardTitle={awd.award_title}
+                          awardDesc={awd.award_desc}
+                      />
+                  ))
+                : '항목이 비었습니다'}
+            {error ? <Alert variant="warning">{error}</Alert> : null}
             {mode === 1 ? (
-                <Button variant="primary">
-                    <FontAwesomeIcon icon={faPen} onClick={setMode} />
-                </Button>
+                <div style={{ textAlign: 'right' }}>
+                    <Button variant="primary">
+                        <FontAwesomeIcon icon={faPen} onClick={setMode} />
+                    </Button>
+                </div>
             ) : null}
             {mode === 2 ? (
-                <>
+                <div style={{ textAlign: 'right' }}>
                     <Button variant="primary" onClick={addAwd}>
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>
                     <Button variant="success" onClick={updateAwd}>
                         <FontAwesomeIcon icon={faCheck} />
                     </Button>
-                </>
+                </div>
             ) : null}
         </div>
     );

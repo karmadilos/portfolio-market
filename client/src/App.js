@@ -7,6 +7,7 @@ import NetworkPage from './pages/NeworkPage';
 import PortfolioPage from './pages/PortfolioPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-datepicker/dist/react-datepicker.css';
+import './App.css';
 
 function App() {
     return (

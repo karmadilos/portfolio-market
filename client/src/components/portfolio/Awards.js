@@ -37,8 +37,8 @@ function Awards({ uid, aid, mode, awardTitle, awardDesc }) {
         >
             {mode !== 2 ? (
                 <>
-                    <h3>{'수상 정보' && awardTitle}</h3>
-                    <p>{'수상 상세내용' && awardDesc}</p>
+                    <h3>{awardTitle || '수상 정보'}</h3>
+                    <p>{awardDesc || '수상 상세내용'}</p>
                 </>
             ) : (
                 <UpdateForm>
@@ -63,7 +63,7 @@ function Awards({ uid, aid, mode, awardTitle, awardDesc }) {
                                 onChange={onChange}
                             />
                         </div>
-                        <div>
+                        <div className="icon">
                             <a style={aStyle}>
                                 <FontAwesomeIcon
                                     icon={faTrash}

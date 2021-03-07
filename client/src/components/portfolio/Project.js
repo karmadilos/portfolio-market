@@ -98,6 +98,7 @@ function Project({ uid, pid, mode, title, desc, start, end }) {
                                     closeOnScroll={true}
                                     selected={startDate}
                                     onChange={changeStartDate}
+                                    maxDate={endDate}
                                 />
                             </Col>
                             {/* </div>
@@ -110,10 +111,11 @@ function Project({ uid, pid, mode, title, desc, start, end }) {
                                     closeOnScroll={true}
                                     selected={endDate}
                                     onChange={changeEndDate}
+                                    minDate={startDate}
                                 />
                             </Col>
                         </Row>
-                        <div>
+                        <div className="icon">
                             {/* delete */}
                             <a style={aStyle} onClick={onDelete}>
                                 <FontAwesomeIcon icon={faTrash} />

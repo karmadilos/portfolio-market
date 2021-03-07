@@ -10,8 +10,8 @@ import { Nav, Navbar, Alert, Form } from 'react-bootstrap';
 // 네이게이션 정보를 나타내는 container 컴포넌트
 function NavBar({ history }) {
     const [user, setUser] = useState({ id: '', fullname: '' });
-    // const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
+    const [mode, setMode] = useState(true);
     const { profile } = useSelector(({ profile }) => ({
         profile: profile.profile,
     }));
@@ -43,6 +43,7 @@ function NavBar({ history }) {
             history.push('/');
         }
     };
+    const onSwitch = () => setMode(!mode);
     useEffect(() => {
         if (!getCookie('csrf_access_token')) {
             // setUser(null);
@@ -58,6 +59,7 @@ function NavBar({ history }) {
             resetUser();
         }
     }, [user, profile.user_name]);
+
     return (
         <>
             {error && <Alert variant="fail">{error}</Alert>}
@@ -76,7 +78,8 @@ function NavBar({ history }) {
                     <Form.Check
                         type="switch"
                         id="custom-switch"
-                        label="Check this switch"
+                        label={mode ? 'Light Mode' : 'Dark Mode'}
+                        onClick={onSwitch}
                     />
                     {/* <Nav.Link href="/network">Network</Nav.Link> */}
                 </Nav>

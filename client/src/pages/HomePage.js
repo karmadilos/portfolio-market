@@ -1,6 +1,7 @@
 import React from 'react';
 import PageTemplate from '../components/PageTemplate';
 import NavBar from '../containers/auth/NavBar';
+import Footer from '../components/Footer';
 
 function HomePage() {
     return (
@@ -13,6 +14,7 @@ function HomePage() {
                         DEMO SITE
                     </div>
                 </>
+                <Footer />
             </PageTemplate>
         </>
     );

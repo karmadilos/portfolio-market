@@ -7,25 +7,28 @@ import {
     formError,
     initializeForm,
     login,
+    setStyleMode,
 } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
+import { ckIsValidPattern } from '../../lib/validation';
 
 // 로그인 정보를 교환하는 container 컴포넌트
 function LoginForm({ history }) {
     const dispatch = useDispatch();
-    const { form, auth, user, authError } = useSelector(({ auth }) => ({
+    const { form, auth, authError, styleMode } = useSelector(({ auth }) => ({
         form: auth.login,
         auth: auth.auth,
-        user: auth.user,
         authError: auth.authError,
+        styleMode: auth.styleMode,
     }));
 
     const onChange = (e) => {
         const { name, value } = e.target;
-        if (!value) {
-            // border color red
-            // message를 각 폼에 전달한다.
-        }
+        console.log(ckIsValidPattern({ type: name, value }));
+        ckIsValidPattern({ type: name, value })
+            ? dispatch(setStyleMode({ type: name, mode: 2 }))
+            : dispatch(setStyleMode({ type: name, mode: 1 }));
+
         dispatch(
             changeInputs({
                 type: 'login',
@@ -38,6 +41,10 @@ function LoginForm({ history }) {
     const onSubmit = (e) => {
         e.preventDefault();
         const { email, password } = form;
+        if (styleMode['email'] !== 2 || styleMode['password'] !== 2) {
+            dispatch(formError('유효하지 않은 입력값입니다.'));
+            return;
+        }
         if (!email || !password) {
             dispatch(formError('아이디 OR 패스워드를 입력하세요.'));
             return;
@@ -46,20 +53,15 @@ function LoginForm({ history }) {
     };
 
     useEffect(() => {
+        if (sessionStorage.getItem('id')) {
+            history.push('/');
+        }
+        if (auth.data) history.push('/');
         dispatch(initializeForm('login'));
         dispatch(formError(''));
-    }, [dispatch]);
+        dispatch(initializeForm('styleMode'));
+    }, [auth, dispatch]);
 
-    useEffect(() => {
-        if (user) {
-            history.push('/');
-            // try {
-            //     localStorage.setItem('user', JSON.stringify(user));
-            // } catch (e) {
-            //     console.log("localStorage Error");
-            // }
-        }
-    }, [history, auth, user]);
     return (
         <AuthFormBlock
             type="login"
@@ -67,6 +69,7 @@ function LoginForm({ history }) {
             onChange={onChange}
             onSubmit={onSubmit}
             error={authError}
+            styleMode={styleMode}
         />
     );
 }

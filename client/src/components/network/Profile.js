@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Button, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faCheck, faCamera } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 // 프로필 컴포넌트
 // mode: view(network 전용, 0), read(portfolio 페이지 전용 - 사용자(1, 2)), update(portfolio 페이지 수정 전용,3)
@@ -33,25 +33,37 @@ function Profile({
             key={2}
             variant="light"
             onClick={() => updatePro({ uid, data: pf })}
+            style={{ color: '#ffffff' }}
         >
             <FontAwesomeIcon icon={faCheck} />
         </Button>,
     ];
 
     const imgComponent = (
-        <Card.Img
-            src={imgUrl || default_img_url}
-            alt="Card image"
-            style={{ borderRadius: '50%' }}
-        />
+        // <Card.Img
+        //     src={imgUrl || default_img_url}
+        //     alt="Card image"
+        //     style={{ borderRadius: '50%', height: 'auto', width: '100%' }}
+        //     variant="top"
+        //     className="justify-content-md-center"
+        // />
+        <div
+            style={{
+                backgroundImage: `url(${imgUrl || default_img_url})`,
+                backgroundSize: 'cover',
+                height: '100%',
+                width: '100%',
+                borderRadius: '50%',
+            }}
+            className="justify-content-md-center"
+        ></div>
     );
 
     const labelStyle = {
-        padding: '6px 25px',
-        borderRadius: '4px',
-        color: 'black',
         cursor: 'pointer',
         display: 'block',
+        width: '270px',
+        height: 'auto',
         textAlign: 'center',
     };
 
@@ -72,7 +84,11 @@ function Profile({
                 style={{
                     backgroundColor: '#fff',
                     borderBottom: '1px solid #fff',
+                    width: '270px',
+                    height: '270px',
+                    margin: '0 auto',
                 }}
+                className="row"
             >
                 {mode !== 2 ? (
                     imgComponent
@@ -85,12 +101,6 @@ function Profile({
                             style={labelStyle}
                         >
                             {imgComponent}
-                            <FontAwesomeIcon
-                                icon={faCamera}
-                                style={{
-                                    fontSize: '1.5rem',
-                                }}
-                            />
                         </label>
                         <input
                             type="file"

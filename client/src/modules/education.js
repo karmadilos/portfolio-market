@@ -41,6 +41,8 @@ const SET_CACHE = 'education/SET_CACHE';
 // mode 변경
 const CHANGE_MODE = 'education/CHANGE_MODE';
 
+const SET_ERROR = 'education/SET_ERROR';
+
 export const readAllEducations = asyncUtils.createPromiseThunk(
     READ_EDUCATION,
     API.getAllEdu,
@@ -67,6 +69,7 @@ export const setCache = createAction(SET_CACHE, ({ eid, key, value }) => ({
 }));
 export const changeMode = createAction(CHANGE_MODE, (mode) => mode);
 
+export const setError = createAction(SET_ERROR, (error) => error);
 // 초기 State
 // [mode] 0(일반 사용자 접근), 1(해당 사용자 접근), 2(해당 사용자 업데이트)
 const initialState = {
@@ -136,6 +139,10 @@ const education = handleActions(
         [CHANGE_MODE]: (state, { payload: mode }) => ({
             ...state,
             mode,
+        }),
+        [SET_ERROR]: (state, { payload: error }) => ({
+            ...state,
+            error: error,
         }),
     },
     initialState, // default return value
