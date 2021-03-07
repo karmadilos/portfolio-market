@@ -9,8 +9,12 @@ const types = {
     register: '회원가입',
 };
 
-function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
+const formBorderColor = ['rgba(0,0,0,.125)', '#dc3545', '#28a745'];
+
+function AuthFormBlock({ type, form, onChange, onSubmit, error, styleMode }) {
     const text = types[type];
+    const { email, password, password_check, fullname } = styleMode;
+    console.log(styleMode);
     return (
         <Container>
             <Row>
@@ -25,9 +29,16 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                                 name="email"
                                 value={form.email}
                                 onChange={onChange}
+                                style={{
+                                    borderColor: formBorderColor[email],
+                                }}
                             />
-                            <Form.Control.Feedback type="invalid">
-                                Please choose a username.
+                            <Form.Control.Feedback
+                                type="invalid"
+                                style={email === 1 ? { display: 'block' } : {}}
+                            >
+                                올바른 이메일 형식이 아닙니다. (ex:
+                                racer@example.com)
                             </Form.Control.Feedback>
                         </Form.Group>
 
@@ -39,13 +50,18 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                                 name="password"
                                 value={form.password}
                                 onChange={onChange}
-                                style={{ borderColor: '#dc3545' }}
+                                style={{
+                                    borderColor: formBorderColor[password],
+                                }}
                             />
                             <Form.Control.Feedback
                                 type="invalid"
-                                style={{ display: 'block' }}
+                                style={
+                                    password === 1 ? { display: 'block' } : {}
+                                }
                             >
-                                Please choose a username.
+                                비밀번호는 8자리 이상의 대소문자나 숫자로
+                                작성하세요.
                             </Form.Control.Feedback>
                         </Form.Group>
                         {type === 'register' && (
@@ -58,7 +74,21 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                                         name="password_check"
                                         value={form.password_check}
                                         onChange={onChange}
+                                        style={{
+                                            borderColor:
+                                                formBorderColor[password_check],
+                                        }}
                                     />
+                                    <Form.Control.Feedback
+                                        type="invalid"
+                                        style={
+                                            password_check === 1
+                                                ? { display: 'block' }
+                                                : {}
+                                        }
+                                    >
+                                        비밀번호 확인 값이 다릅니다.
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group controlId="formBasicPassword">
                                     <Form.Label>이름</Form.Label>
@@ -67,7 +97,21 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error }) {
                                         name="fullname"
                                         value={form.fullname}
                                         onChange={onChange}
+                                        style={{
+                                            borderColor:
+                                                formBorderColor[fullname],
+                                        }}
                                     />
+                                    <Form.Control.Feedback
+                                        type="invalid"
+                                        style={
+                                            fullname === 1
+                                                ? { display: 'block' }
+                                                : {}
+                                        }
+                                    >
+                                        이름은 2글자 이상 입력하셔야 합니다.
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </>
                         )}
@@ -104,6 +148,7 @@ AuthFormBlock.propTypes = {
     onChange: PropTypes.func,
     onSubmit: PropTypes.func,
     error: PropTypes.string,
+    styleMode: PropTypes.object,
 };
 
 export default AuthFormBlock;

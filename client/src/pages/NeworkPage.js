@@ -1,4 +1,5 @@
 import React from 'react';
+import Footer from '../components/Footer';
 // import { CardDeck } from 'react-bootstrap';
 import PageTemplate from '../components/PageTemplate';
 import NavBar from '../containers/auth/NavBar';
@@ -9,12 +10,15 @@ import ProfileContainer from '../containers/network/ProfileContainer';
 
 function Network() {
     return (
-        <PageTemplate>
-            <>
-                <NavBar />
-                <ProfileContainer />
-            </>
-        </PageTemplate>
+        <>
+            <PageTemplate>
+                <>
+                    <NavBar />
+                    <ProfileContainer />
+                </>
+                <Footer />
+            </PageTemplate>
+        </>
     );
 }
 

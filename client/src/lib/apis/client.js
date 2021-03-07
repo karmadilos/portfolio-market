@@ -1,8 +1,11 @@
 // axios 인스턴스 객체 만들기
 import axios from 'axios';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const client = axios.create();
 //client.defaults.headers.common['Authorization'] = 'Bearer a1b2c3d4';
+client.defaults.baseURL = process.env.REACT_APP_HOST;
 client.defaults.withCredentials = true;
 export const request = (method, url, data) => {
     console.log(url);

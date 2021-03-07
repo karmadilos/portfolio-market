@@ -13,7 +13,7 @@ function UpdateForm({ children }) {
     return (
         <>
             <Row className="row" id="edu" style={{ margin: '20px 0px' }}>
-                <Form.Group as={Col} md={{ span: 6, offset: 3 }}>
+                <Form.Group as={Col} md={{ span: 7, offset: 3 }}>
                     {children}
                     {/* <div>
                         <a style={aStyle}>

@@ -78,9 +78,9 @@ function Certificate({ uid, cid, mode, title, organization, acquisitionDate }) {
                             />
                         </div>
                         {/* date picker 1개 */}
-                        <Row>
-                            <Col md={12}>
-                                <Form.Label>자격증 취득일</Form.Label>
+                        <Row style={{ margin: '20px 0px' }}>
+                            <Col>
+                                <Form.Label>자격증 취득일 &nbsp;</Form.Label>
                                 <DatePicker
                                     className="form-control"
                                     closeOnScroll={true}
@@ -89,7 +89,7 @@ function Certificate({ uid, cid, mode, title, organization, acquisitionDate }) {
                                 />
                             </Col>
                         </Row>
-                        <div>
+                        <div className="icon">
                             <a style={aStyle} onClick={onDelete}>
                                 <FontAwesomeIcon icon={faTrash} />
                             </a>

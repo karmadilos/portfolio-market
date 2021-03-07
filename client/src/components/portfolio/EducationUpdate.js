@@ -24,7 +24,7 @@ function EducationUpdate({ check, edu, onClick, onChange, onDelete }) {
             <>
                 <h3>
                     <Form.Control
-                        md={'mb-6'}
+                        md={6}
                         type="text"
                         placeholder="학교 이름"
                         name="school"
@@ -85,7 +85,7 @@ function EducationUpdate({ check, edu, onClick, onChange, onDelete }) {
                     {/* <label htmlFor="doctor">박사 졸업</label> */}
                     <label htmlFor="doctor">박사 졸업</label>
                 </div>
-                <div>
+                <div className="icon">
                     {/* delete */}
                     <a style={aStyle}>
                         <FontAwesomeIcon icon={faTrash} onClick={onDelete} />

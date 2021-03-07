@@ -24,7 +24,11 @@ function SearchBar({ search, onChange, onSubmit }) {
                     {/* <Form.Text className="text-muted">
                     </Form.Text> */}
                     <InputGroup.Append>
-                        <Button variant="primary" type="submit">
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            style={{ margin: '0px' }}
+                        >
                             <FontAwesomeIcon icon={faSearch} />
                         </Button>
                     </InputGroup.Append>

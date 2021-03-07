@@ -7,6 +7,7 @@ import EducationContainer from '../containers/portfolio/EducationContainer';
 import ProfileContainer from '../containers/portfolio/ProfileContainer';
 import ProjectContainer from '../containers/portfolio/ProjectContainer';
 import { Col, Row } from 'react-bootstrap';
+import Footer from '../components/Footer';
 
 function Portfolio() {
     return (
@@ -24,6 +25,7 @@ function Portfolio() {
                         <CertificateContainer />
                     </Col>
                 </Row>
+                <Footer />
             </>
         </PageTemplate>
     );

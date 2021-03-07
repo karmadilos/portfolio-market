@@ -26,6 +26,8 @@ const SET_USER = 'auth/SET_USER';
 
 const FORM_ERROR = 'auth/FORM_ERROR';
 
+const SET_STYLE_MODE = 'auth/SET_STYLE_MODE';
+
 export const changeInputs = createAction(
     CHANGE_INPUTS,
     ({ type, key, value }) => ({
@@ -53,7 +55,7 @@ export const login = ({ email, password }) => async (dispatch) => {
         sessionStorage.setItem('fullname', payload.data.user.fullname);
         dispatch({ type: LOGIN_SUCCESS, payload }); // 성공
     } catch (e) {
-        console.log(e);
+        console.log(e.response.data);
         dispatch({
             type: LOGIN_FAILURE,
             payload: e.response.data,
@@ -98,6 +100,11 @@ export const setUser = createAction(SET_USER, (user) => user);
 
 export const formError = createAction(FORM_ERROR, (err) => err);
 
+export const setStyleMode = createAction(SET_STYLE_MODE, ({ type, mode }) => ({
+    type,
+    mode,
+}));
+
 // 초기 State
 const initialState = {
     register: {
@@ -109,6 +116,12 @@ const initialState = {
     login: {
         email: '',
         password: '',
+    },
+    styleMode: {
+        email: 0,
+        password: 0,
+        password_check: 0,
+        fullname: 0,
     },
     auth: asyncUtils.reducerUtils.initial(),
     user: null,
@@ -135,7 +148,7 @@ const auth = handleActions(
         [REGISTER_FAILURE]: (state, action) => ({
             ...state,
             auth: asyncUtils.reducerUtils.error(action.payload),
-            authError: action.payload.msg,
+            authError: action.payload.response.data.msg,
         }),
         [LOGIN]: (state) => ({
             ...state,
@@ -183,6 +196,10 @@ const auth = handleActions(
         [FORM_ERROR]: (state, { payload: err }) => ({
             ...state,
             authError: err,
+        }),
+        [SET_STYLE_MODE]: (state, { payload: { type, mode } }) => ({
+            ...state,
+            styleMode: { ...state.styleMode, [type]: mode },
         }),
     },
     initialState,

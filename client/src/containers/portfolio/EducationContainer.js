@@ -5,10 +5,11 @@ import {
     changeMode,
     createEducation,
     readAllEducations,
+    setError,
     updateEducation,
 } from '../../modules/education';
 import Education from '../../components/portfolio/Education';
-import { Button, Col } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faPen } from '@fortawesome/free-solid-svg-icons';
 
@@ -31,6 +32,14 @@ function EducationContainer() {
     const setMode = () => dispatch(changeMode(2));
     const addEdu = () => dispatch(createEducation({ uid }));
     const updateEdu = () => {
+        for (let edu of cache) {
+            for (let v of Object.values(edu)) {
+                if (!v) {
+                    dispatch(setError('빈 값이 올 수 없습니다.'));
+                    return;
+                }
+            }
+        }
         dispatch(updateEducation({ uid, data: cache }));
         dispatch(changeMode(1));
     };
@@ -48,48 +57,50 @@ function EducationContainer() {
         }
     }, [currentPage]); // 사용자 페이지가 바뀔 때마다, 사용자 정보를 호출한다.
     return (
-        <div style={{ border: '1px solid rgba(0,0,0,.125)' }}>
-            <h4>학력</h4>
-            {educations.length > 0 ? (
-                educations.map((edu) => (
-                    <Education
-                        key={edu.id}
-                        eid={edu.id}
-                        uid={uid}
-                        school={edu.school_name}
-                        major={edu.major}
-                        status={edu.status}
-                    />
-                ))
-            ) : (
-                <Col
-                    md={12}
-                    style={{
-                        margin: '20px 0px',
-                        textAlign: 'center',
-                        padding: '10px 10px',
-                    }}
-                >
-                    항목이 비었습니다.
-                </Col>
-            )}
+        <div
+            style={{
+                border: '1px solid rgba(0,0,0,.125)',
+                marginBottom: '10px',
+                textAlign: 'center',
+            }}
+        >
+            <h4 className="title">학력</h4>
+            {educations.length > 0
+                ? educations.map((edu) => (
+                      <Education
+                          key={edu.id}
+                          eid={edu.id}
+                          uid={uid}
+                          school={edu.school_name}
+                          major={edu.major}
+                          status={edu.status}
+                      />
+                  ))
+                : '항목이 비었습니다'}
+            {error ? <Alert variant="warning">{error}</Alert> : null}
             {mode === 1 ? (
                 // change mode
-                <Button variant="primary">
-                    <FontAwesomeIcon icon={faPen} onClick={setMode} />
-                </Button>
+                <div style={{ textAlign: 'right' }}>
+                    <Button variant="primary">
+                        <FontAwesomeIcon icon={faPen} onClick={setMode} />
+                    </Button>
+                </div>
             ) : null}
             {mode === 2 ? (
-                <>
+                <div style={{ textAlign: 'right' }}>
                     {/* post */}
-                    <Button variant="primary" onClick={addEdu}>
+                    <Button
+                        variant="primary"
+                        onClick={addEdu}
+                        className="plus-btn"
+                    >
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>
                     {/* put */}
-                    <Button variant="success">
+                    <Button variant="success" className="plus-btn">
                         <FontAwesomeIcon icon={faCheck} onClick={updateEdu} />
                     </Button>
-                </>
+                </div>
             ) : null}
         </div>
     );

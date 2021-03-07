@@ -48,20 +48,17 @@ function Education({ eid, uid, school, major, status }) {
             style={{
                 margin: '20px 0px',
                 textAlign: 'center',
-                padding: '10px 10px',
+                padding: '0px 0px',
             }}
         >
             {mode !== 2 ? (
-                school &&
-                major && (
-                    <div>
-                        <h3>{'학력사항을 추가하세요' && school}</h3>
-                        <p>
-                            {'전공' && major}
-                            <span>{eState}</span>
-                        </p>
-                    </div>
-                )
+                <div>
+                    <h3>{school || '학력 정보'}</h3>
+                    <p>
+                        {major || '전공'}
+                        <span>{eState}</span>
+                    </p>
+                </div>
             ) : (
                 <EducationUpdate
                     check={check}

@@ -7,20 +7,32 @@ import {
     formError,
     initializeForm,
     register,
+    setStyleMode,
 } from '../../modules/auth';
 import { withRouter } from 'react-router-dom';
+import { ckIsValidPattern } from '../../lib/validation';
 
 // 회원 가입 정보를 주고받는 Container 컴포넌트
 function RegisterForm({ history }) {
     const dispatch = useDispatch();
-    const { form, authError, auth } = useSelector(({ auth }) => ({
+    const { form, auth, authError, styleMode } = useSelector(({ auth }) => ({
         form: auth.register,
         auth: auth.auth,
         authError: auth.authError,
+        styleMode: auth.styleMode,
     }));
 
     const onChange = (e) => {
         const { name, value } = e.target;
+        console.log(ckIsValidPattern({ type: name, value }));
+        ckIsValidPattern({ type: name, value })
+            ? dispatch(setStyleMode({ type: name, mode: 2 }))
+            : dispatch(setStyleMode({ type: name, mode: 1 }));
+        if (name === 'password_check') {
+            value === form['password']
+                ? dispatch(setStyleMode({ type: name, mode: 2 }))
+                : dispatch(setStyleMode({ type: name, mode: 1 }));
+        }
         dispatch(
             changeInputs({
                 type: 'register',
@@ -43,17 +55,26 @@ function RegisterForm({ history }) {
             dispatch(formError('비밀번호와 비밀번호 확인이 다릅니다.'));
             return;
         }
+        if (
+            styleMode['email'] != 2 ||
+            styleMode['password'] != 2 ||
+            styleMode['password_check'] != 2 ||
+            styleMode['fullname'] != 2
+        ) {
+            dispatch(formError('유효하지 않은 입력입니다.'));
+        }
         dispatch(register({ email, password, fullname }));
     };
 
     useEffect(() => {
         dispatch(initializeForm('register'));
         dispatch(formError(''));
+        dispatch(initializeForm('styleMode'));
     }, [dispatch]);
 
     useEffect(() => {
         if (auth.data) history.push('/login');
-    }, [authError, auth]);
+    }, [auth, authError]);
 
     return (
         <AuthFormBlock
@@ -62,6 +83,7 @@ function RegisterForm({ history }) {
             onChange={onChange}
             onSubmit={onSubmit}
             error={authError}
+            styleMode={styleMode}
         />
     );
 }
