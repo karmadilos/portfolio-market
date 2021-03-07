@@ -10,7 +10,6 @@ from flask_jwt_extended import (
     get_jwt,
     create_access_token,
     set_access_cookies,
-    set_access_cookies,
 )
 from datetime import datetime, timedelta, timezone
 from database.db import db
@@ -19,6 +18,7 @@ migrate = Migrate()
 
 # auth blueprint 객체
 from resources.auth.auth import auth
+from resources.auth.auth import jwt
 from resources.portfolio.education import EducationApi
 from resources.portfolio.awards import AwardsApi
 from resources.portfolio.project import ProjectApi
@@ -38,12 +38,12 @@ def set_api_resources(api):
 
 def create_app():
     # Flask 객체 app 생성 및 config 변수 적용
-    app = Flask(__name__)
-    CORS(app, supports_credentials=True)
+    app = Flask(__name__, static_url_path="/static")
+    CORS(app, supports_credentials=True, origins=os.getenv("ORIGIN"))
     # app object에 config 적용
     app.config.from_object(config)
     # jwt 적용을 위한 JMTManager 적용
-    jwt = JWTManager(app)
+    jwt.init_app(app)
     # auth 객체 blueprint 등록
     app.register_blueprint(auth, url_prefix="/auth")
     # api 설정 및 적용
@@ -57,6 +57,11 @@ def create_app():
     # JWT 암시적 로그인 연장을 위한 코드
     # app에 대한 모든 HTTP request 요청 실행 후 refresh
     # 여부를 확인하고 refresh 한다.
+    @app.after_request
+    def add_header(response):
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        return response
+
     @app.after_request
     def refresh_expiring_jwts(response):
         try:
@@ -72,6 +77,7 @@ def create_app():
         except (RuntimeError, KeyError):
             # Case where there is not a valid JWT. Just return the original response
             # 유효한 Access Token이 아닐 때는 기존 response를 그대로 보낸다.
+            print("error")
             return response
 
     return app

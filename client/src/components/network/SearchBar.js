@@ -1,19 +1,34 @@
 import React from 'react';
 import { Form, Button, InputGroup } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import PropType from 'prop-types';
 
-function SearchBar({ onSubmit }) {
+// 검색 창 컴포넌트
+function SearchBar({ search, onChange, onSubmit }) {
     return (
-        <Form style={{ marginTop: '30px', marginBottom: '70px' }} className="col-md-12" onSubmit={onSubmit}>
+        <Form
+            style={{ marginTop: '30px', marginBottom: '70px', padding: '0px' }}
+            className="col-md-12"
+            onSubmit={onSubmit}
+        >
             <Form.Group controlId="formBasicEmail">
                 <InputGroup className="">
-                    <Form.Control type="text" placeholder="이름으로 검색" name="search" />
+                    <Form.Control
+                        type="text"
+                        placeholder="이름으로 검색"
+                        name="search"
+                        value={search}
+                        onChange={onChange}
+                    />
                     {/* <Form.Text className="text-muted">
                     </Form.Text> */}
                     <InputGroup.Append>
-                        <Button variant="primary" type="submit">
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            style={{ margin: '0px' }}
+                        >
                             <FontAwesomeIcon icon={faSearch} />
                         </Button>
                     </InputGroup.Append>
@@ -24,6 +39,8 @@ function SearchBar({ onSubmit }) {
 }
 
 SearchBar.propTypes = {
-    onSubmit: PropType.func
-}
+    search: PropType.string,
+    onChange: PropType.func,
+    onSubmit: PropType.func,
+};
 export default SearchBar;

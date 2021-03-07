@@ -1,96 +1,75 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
-// import { Card } from 'react-bootstrap';
-import { getAllProfile } from '../../lib/apis/profile';
+import { useSelector, useDispatch } from 'react-redux';
+import { CardColumns } from 'react-bootstrap';
+import AlertBlock from '../../components/network/AlertBlock';
 import Profile from '../../components/network/Profile';
 import SearchBar from '../../components/network/SearchBar';
 import SearchError from '../../components/network/SearchError';
+import { readAllProfiles, searchProfile } from '../../modules/profile';
 
-function ProfileContainer({ history }) {
-    const [profiles, setProfiles] = useState([]);
-    const [search, setSearch] = useState('')
-    const [error, setError] = useState(null);
+function ProfileContainer() {
+    const { mode, profiles, error } = useSelector(({ profile }) => ({
+        mode: profile.mode,
+        profiles: profile.profiles,
+        error: profile.error,
+        status: profile.status,
+    }));
+
+    const dispatch = useDispatch();
+    const [search, setSearch] = useState('');
+    const [errMsg, setErrMsg] = useState(null);
+
+    // 검색창 input change event handler
+    const onChange = (e) => {
+        console.log(e.target);
+        setSearch(e.target.value);
+    };
+    // 검색창 input submit event handler
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(e.target[0].value);
-        setSearch(e.target[0].value);
-    }
+        if (search.length < 2)
+            setErrMsg('검색어는 최소 2글자 이상으로 입력하세요');
+        else dispatch(searchProfile({ search }));
+    };
 
-    const onClick = (e) => {
-        console.log(e.target.id);
-        // history.push(`/portfolio/${e.target.}`)
-        history.push(`/portfolio/${e.target.id}`);
-    }
+    // 화면이 처음 mount 될 때, 모든 사용자의 프로필 정보 호출
     useEffect(() => {
-        setError(null);
-        if (profiles.length === 0 && !search) {
-            getAllProfile()
-                .then(res => {
-                    console.log(res.data.data);
-                    if (res.data.data.length > 0) {
-                        const payload = res.data.data.map(v => (
-                            <Profile
-                                key={v.user_id}
-                                id={v.user_id}
-                                mode={0}
-                                imgurl={v.img_url}
-                                name={v.user_name}
-                                comment={v.comment}
-                                onClick={onClick} />))
-                        // let tmp = [], data = []
-                        // for (let i in payload) {
-                        //     tmp = [...tmp, payload[i]]
-                        //     if ((i + 1) % 3 === 0) {
-                        //         data = [...data, (<Card.deck key={i}>{tmp}</Card.deck>)]
-                        //         tmp = []
-                        //     }
-                        // }
-                        // if (tmp.length !== 0)
-                        //     data = [...data, (<Card.deck key={payload.length}>{tmp}</Card.deck>)];
-                        // console.log(tmp);
-                        setProfiles(payload);
-                    }
-                    else {
-                        setError(true);
-                        setProfiles([]);
-                        setSearch('');
-                    }
-                })
-                .catch(err => {
-                    setError(true);
-                    console.log(err);
-                })
-        }
-        if (search) {
-            getAllProfile(search)
-                .then(res => {
-                    console.log(res.data.data);
-                    if (res.data.data.length > 0) {
-                        const payload = res.data.data.map(v => (<Profile key={v.user_id} mode="view" imgurl={v.img_url} name={v.user_name} comment={v.comment} />))
-                        setProfiles(payload);
-                    }
-                    else {
-                        setError(true);
-                        setProfiles([]);
-                    }
-                })
-                .catch(err => {
-                    setError(true);
-                    console.log(err);
-                })
-        }
-    }, [search])
+        dispatch(readAllProfiles());
+    }, []);
+
+    const profileOutput = profiles.map((p) => (
+        <Profile
+            key={p.id}
+            uid={p.user_id.toString()}
+            mode={mode}
+            name={p.user_name}
+            imgUrl={p.img_url}
+            comment={p.comment}
+        />
+    ));
+
+    // 규칙적인 grid로 프로필 정보를 표시하기 위한 작업
+    let profileBlock = [];
+    for (let i = 0; i < profileOutput.length; i += 3) {
+        profileBlock = [
+            ...profileBlock,
+            <CardColumns key={i}>{profileOutput.slice(i, i + 3)}</CardColumns>,
+        ];
+    }
     return (
         <>
-            <SearchBar onSubmit={onSubmit} />
-            <div>{profiles}</div>
-            {error && (<SearchError />)}
+            <div className="row">
+                <SearchBar onSubmit={onSubmit} onChange={onChange} />
+            </div>
+            {profileBlock}
+            <AlertBlock
+                message={errMsg}
+                setErrMsg={setErrMsg}
+                setSearch={setSearch}
+            />
+            {error && <SearchError />}
         </>
-    )
+    );
 }
 
-ProfileContainer.propTypes = {
-    history: PropTypes.object
-}
-export default withRouter(ProfileContainer);
+export default ProfileContainer;
