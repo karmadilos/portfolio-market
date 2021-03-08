@@ -61,7 +61,7 @@ function RegisterForm({ history }) {
             styleMode['password_check'] != 2 ||
             styleMode['fullname'] != 2
         ) {
-            dispatch(formError('유효하지 않은 입력입니다.'));
+            dispatch(formError('유효하지 않은 입력입니다.'));return;
         }
         dispatch(register({ email, password, fullname }));
     };

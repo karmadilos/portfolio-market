@@ -25,6 +25,7 @@ class ProfileApi(Resource):
             profiles = db.session.query(Profile).filter(Profile.user_name.like(q)).all()
         # 검색 쿼리스트링이 없고, user_id 값이 주어지면 해당하는 profile return, 200
         elif user_id:
+            print(user_id)
             profiles = db.session.query(Profile).filter_by(user_id=user_id)
         # 검색 쿼리스트링이 없고, user_id 값이 주어지지 않으면 모든 profile return, 200
         else:
@@ -32,7 +33,7 @@ class ProfileApi(Resource):
 
         # 데이터가 없는 초기의 경우에는 빈 배열만 return, 200
         if not profiles:
-            return jsonify(status="fail", profiles=[], message="검색 결과가 없습니다."), 400
+            return abort(400, status="fail", profiles=[], message="검색 결과가 없습니다.")
 
         keys = [
             "id",

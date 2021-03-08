@@ -62,8 +62,8 @@ class CertificateApi(Resource):
         data = request.get_json(force=True)
         # print(data["data"])
         for v in data:
-            v["acquisition_date"] = maya.parse(v["acquisition_date"]).datetime()
-            v["create_date"] = maya.parse(v["create_date"]).datetime()
+            v["acquisition_date"] = maya.parse(' '.join(v["acquisition_date"].split()[:5])).datetime()
+            v["create_date"] = maya.parse(' '.join(v["create_date"].split()[:5])).datetime()
             v["updated_date"] = datetime.datetime.utcnow()
             db.session.query(Certificate).filter_by(id=v["id"]).update(v)
         db.session.commit()

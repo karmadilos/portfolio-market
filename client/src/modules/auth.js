@@ -55,10 +55,10 @@ export const login = ({ email, password }) => async (dispatch) => {
         sessionStorage.setItem('fullname', payload.data.user.fullname);
         dispatch({ type: LOGIN_SUCCESS, payload }); // 성공
     } catch (e) {
-        console.log(e.response.data);
+        console.log(e.response);
         dispatch({
             type: LOGIN_FAILURE,
-            payload: e.response.data,
+            payload: e.response,
             error: true,
         }); // 실패
     }
@@ -162,7 +162,7 @@ const auth = handleActions(
         [LOGIN_FAILURE]: (state, action) => ({
             ...state,
             auth: asyncUtils.reducerUtils.error(action.payload),
-            authError: action.payload.msg,
+            authError: action.payload.data.msg,
         }),
         [LOGOUT]: (state) => ({
             ...state,

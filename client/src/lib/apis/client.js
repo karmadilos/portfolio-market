@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const client = axios.create();
 //client.defaults.headers.common['Authorization'] = 'Bearer a1b2c3d4';
-client.defaults.baseURL = process.env.REACT_APP_HOST;
+//client.defaults.baseURL = process.env.REACT_APP_HOST;
 client.defaults.withCredentials = true;
 export const request = (method, url, data) => {
     console.log(url);
@@ -13,10 +13,14 @@ export const request = (method, url, data) => {
         method,
         url,
         data,
+	headers: {
+	'Content-Type': 'text/plain;charset=utf-8'
+	}
     });
 };
 
 export const requestWithJWT = (method, url, data) => {
+   console.log(url)
     return client({
         method,
         url,

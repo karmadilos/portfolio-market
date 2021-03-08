@@ -1,6 +1,6 @@
 // 이메일, 패스워드, 이름 정규식
 const emailPattern = new RegExp(/[\w]*[.]?[\w]+@[\w][.]?[\w]+[.][\w]+/);
-const passwordPattern = new RegExp(/^[a-zA-Z0-9]{8,}$/);
+const passwordPattern = new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/);
 const namePattern = new RegExp(/^[\w\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,50}$/);
 
 export const ckIsValidPattern = ({ type, value }) => {

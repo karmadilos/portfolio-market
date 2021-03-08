@@ -26,8 +26,9 @@ name_pattern = re.compile("[\d\W]")
 
 @auth.route("/register", methods=["POST"])
 def register():
+    print(request)
     email, password, fullname = dict(request.get_json(force=True)).values()
-    # print(email, password, fullname)
+    print(email, password, fullname)
     if email == "" or password == "" or fullname == "":
         abort(400, msg="이메일, 패스워드, 이름은 NULL일 수 없습니다.")
     elif not email_pattern.match(email):
@@ -79,7 +80,7 @@ def login():
         abort(400, msg="비밀번호 형식이 올바르지 않습니다.")
     user = User.query.filter_by(email=email).first()
     if not user or not user.check_password(password):
-        abort(400, status="fail", msg="아이디 또는 비밀번호를 확인하세요.")
+        return jsonify(status="fail", msg="아이디 또는 비밀번호를 확인하세요."), 400
 
     response = jsonify(
         status="success", user={"id": user.id, "fullname": user.fullname}

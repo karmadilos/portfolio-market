@@ -60,8 +60,8 @@ function AuthFormBlock({ type, form, onChange, onSubmit, error, styleMode }) {
                                     password === 1 ? { display: 'block' } : {}
                                 }
                             >
-                                비밀번호는 8자리 이상의 대소문자나 숫자로
-                                작성하세요.
+                               비밀번호는 8자리 이상의 대소문자+숫자+특수문자로
+                                구성하세요.
                             </Form.Control.Feedback>
                         </Form.Group>
                         {type === 'register' && (

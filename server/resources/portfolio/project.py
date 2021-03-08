@@ -61,9 +61,10 @@ class ProjectApi(Resource):
         data = request.get_json(force=True)
         # print(data["data"])
         for v in data:
-            v["start_date"] = maya.parse(v["start_date"]).datetime()
-            v["end_date"] = maya.parse(v["end_date"]).datetime()
-            v["create_date"] = maya.parse(v["create_date"]).datetime()
+            print(*v["start_date"].split()[:6])
+            v["start_date"] = maya.parse(' '.join(v["start_date"].split()[:5])).datetime()
+            v["end_date"] = maya.parse(' '.join(v["end_date"].split()[:5])).datetime()
+            v["create_date"] = maya.parse(' '.join(v["create_date"].split()[:5])).datetime()
             v["updated_date"] = datetime.datetime.utcnow()
             db.session.query(Project).filter_by(id=v["id"]).update(v)
         db.session.commit()
